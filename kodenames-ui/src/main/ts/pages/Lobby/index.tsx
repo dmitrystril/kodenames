@@ -5,7 +5,11 @@ import styled from 'styled-components';
 import Header from '../../components/Header';
 import { PUZZLE_IMAGE } from '../../../resources/styles/images/svg/svgBase64';
 import { Pages } from '../../constants/Pages';
-import { useCreateGameMutation, useGamesQuery } from '../../generated/graphql';
+import {
+  useCreateGameMutation,
+  useGamesQuery,
+  useCurrentUserQuery,
+} from '../../generated/graphql';
 import { GameList } from '../../components/GameList';
 
 const Root = styled.div`
@@ -46,22 +50,31 @@ const Button = styled.button`
 export const Lobby: React.FC = () => {
   const history = useHistory();
   const [createGame] = useCreateGameMutation();
+  const { data: userData, loading } = useCurrentUserQuery();
   const { data: gamesData } = useGamesQuery({
     fetchPolicy: 'network-only',
   });
+
+  const handleCreateGame = async () => {
+    const game = await createGame({
+      variables: {
+        userId: userData!.currentUser!.id,
+      },
+    }).catch((error) => {
+      console.error('game not created', error);
+    });
+
+    if (game) {
+      history.push(Pages.GAME);
+    }
+  };
 
   return (
     <Root>
       <Header />
       <GameListWrapper>
         <ControlPanel>
-          <Button
-            onClick={() => {
-              history.push(Pages.GAME);
-            }}
-          >
-            Create new game
-          </Button>
+          <Button onClick={handleCreateGame}>Create new game</Button>
           <Button>Refresh list</Button>
         </ControlPanel>
 
