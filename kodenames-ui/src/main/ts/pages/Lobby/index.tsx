@@ -69,13 +69,15 @@ export const Lobby: React.FC = () => {
     }
   };
 
+  const handleRefreshList = async () => {};
+
   return (
     <Root>
       <Header />
       <GameListWrapper>
         <ControlPanel>
           <Button onClick={handleCreateGame}>Create new game</Button>
-          <Button>Refresh list</Button>
+          <Button onClick={handleRefreshList}>Refresh list</Button>
         </ControlPanel>
 
         <GameList gamesData={gamesData} />

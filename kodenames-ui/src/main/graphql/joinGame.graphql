@@ -1,0 +1,9 @@
+mutation joinGame($userId: Float!, $gameId: Float!) {
+  joinGame(userId: $userId, gameId: $gameId) {
+    id,
+    users {
+      id
+      email
+    }
+  }
+}

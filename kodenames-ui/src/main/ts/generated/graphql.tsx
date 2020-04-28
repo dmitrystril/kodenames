@@ -38,6 +38,7 @@ export type Mutation = {
   revokeRefreshTokensForUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   createGame: Game;
+  joinGame: Game;
 };
 
 
@@ -59,6 +60,12 @@ export type MutationRevokeRefreshTokensForUserArgs = {
 
 
 export type MutationCreateGameArgs = {
+  userId: Scalars['Float'];
+};
+
+
+export type MutationJoinGameArgs = {
+  gameId: Scalars['Float'];
   userId: Scalars['Float'];
 };
 
@@ -109,6 +116,24 @@ export type GamesQuery = (
       & Pick<User, 'id' | 'email'>
     )>> }
   )> }
+);
+
+export type JoinGameMutationVariables = {
+  userId: Scalars['Float'];
+  gameId: Scalars['Float'];
+};
+
+
+export type JoinGameMutation = (
+  { __typename?: 'Mutation' }
+  & { joinGame: (
+    { __typename?: 'Game' }
+    & Pick<Game, 'id'>
+    & { users?: Maybe<Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email'>
+    )>> }
+  ) }
 );
 
 export type LoginMutationVariables = {
@@ -265,6 +290,43 @@ export function useGamesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type GamesQueryHookResult = ReturnType<typeof useGamesQuery>;
 export type GamesLazyQueryHookResult = ReturnType<typeof useGamesLazyQuery>;
 export type GamesQueryResult = ApolloReactCommon.QueryResult<GamesQuery, GamesQueryVariables>;
+export const JoinGameDocument = gql`
+    mutation joinGame($userId: Float!, $gameId: Float!) {
+  joinGame(userId: $userId, gameId: $gameId) {
+    id
+    users {
+      id
+      email
+    }
+  }
+}
+    `;
+export type JoinGameMutationFn = ApolloReactCommon.MutationFunction<JoinGameMutation, JoinGameMutationVariables>;
+
+/**
+ * __useJoinGameMutation__
+ *
+ * To run a mutation, you first call `useJoinGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinGameMutation, { data, loading, error }] = useJoinGameMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      gameId: // value for 'gameId'
+ *   },
+ * });
+ */
+export function useJoinGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<JoinGameMutation, JoinGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<JoinGameMutation, JoinGameMutationVariables>(JoinGameDocument, baseOptions);
+      }
+export type JoinGameMutationHookResult = ReturnType<typeof useJoinGameMutation>;
+export type JoinGameMutationResult = ApolloReactCommon.MutationResult<JoinGameMutation>;
+export type JoinGameMutationOptions = ApolloReactCommon.BaseMutationOptions<JoinGameMutation, JoinGameMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
