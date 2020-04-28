@@ -1,0 +1,9 @@
+mutation createGame($userId: Float!) {
+  createGame(userId: $userId) {
+    id,
+    users {
+      id
+      email
+    }
+  }
+}

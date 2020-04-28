@@ -1,0 +1,9 @@
+query Games {
+  games {
+    id
+    users {
+      id
+      email
+    }
+  }
+}

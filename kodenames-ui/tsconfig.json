@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    /* Module code generation */
+    "module": "esnext",
+    "strict": true,
+    "allowJs": true,
+    /* List of library files to be included in the compilation */
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    /* Skip type checking of all declaration files (*.d.ts) */
+    "skipLibCheck": true,
+    /* Emit __importStar and __importDefault helpers for runtime babel ecosystem compatibility */
+    "esModuleInterop": true,
+    /* Allow default imports from modules with no default export */
+    "allowSyntheticDefaultImports": true,
+    /* Disallow inconsistently-cased references to the same file */
+    "forceConsistentCasingInFileNames": true,
+    /* Determine how modules get resolved */
+    "moduleResolution": "node",
+    /* Include modules imported with .json extension */
+    "resolveJsonModule": true,
+    /* Perform additional checks to ensure that separate compilation would be safe. */
+    "isolatedModules": true,
+    /* Do not emit outputs */
+    "noEmit": true,
+    /* Support JSX in .tsx files */
+    "jsx": "react"
+  },
+  /* List of filenames or patterns to include in the program */
+  "include": [
+    "src"
+  ],
+  "exclude": ["node_modules"],
+}
