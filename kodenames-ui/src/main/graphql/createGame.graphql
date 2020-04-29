@@ -1,6 +1,7 @@
-mutation createGame($userId: Float!) {
+mutation createGame($userId: String!) {
   createGame(userId: $userId) {
-    id,
+    id
+    no
     users {
       id
       email

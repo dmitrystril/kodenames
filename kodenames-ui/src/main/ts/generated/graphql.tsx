@@ -20,14 +20,15 @@ export type Query = {
 
 export type User = {
    __typename?: 'User';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   email: Scalars['String'];
   game?: Maybe<Game>;
 };
 
 export type Game = {
    __typename?: 'Game';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
+  no: Scalars['Int'];
   users?: Maybe<Array<User>>;
 };
 
@@ -55,18 +56,18 @@ export type MutationLoginArgs = {
 
 
 export type MutationRevokeRefreshTokensForUserArgs = {
-  userId: Scalars['Int'];
+  userId: Scalars['String'];
 };
 
 
 export type MutationCreateGameArgs = {
-  userId: Scalars['Float'];
+  userId: Scalars['String'];
 };
 
 
 export type MutationJoinGameArgs = {
-  gameId: Scalars['Float'];
-  userId: Scalars['Float'];
+  gameId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type LoginResponse = {
@@ -76,7 +77,7 @@ export type LoginResponse = {
 };
 
 export type CreateGameMutationVariables = {
-  userId: Scalars['Float'];
+  userId: Scalars['String'];
 };
 
 
@@ -84,7 +85,7 @@ export type CreateGameMutation = (
   { __typename?: 'Mutation' }
   & { createGame: (
     { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+    & Pick<Game, 'id' | 'no'>
     & { users?: Maybe<Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'email'>
@@ -110,7 +111,7 @@ export type GamesQuery = (
   { __typename?: 'Query' }
   & { games: Array<(
     { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+    & Pick<Game, 'id' | 'no'>
     & { users?: Maybe<Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'email'>
@@ -119,8 +120,8 @@ export type GamesQuery = (
 );
 
 export type JoinGameMutationVariables = {
-  userId: Scalars['Float'];
-  gameId: Scalars['Float'];
+  userId: Scalars['String'];
+  gameId: Scalars['String'];
 };
 
 
@@ -173,22 +174,12 @@ export type RegisterMutation = (
   & Pick<Mutation, 'register'>
 );
 
-export type UsersQueryVariables = {};
-
-
-export type UsersQuery = (
-  { __typename?: 'Query' }
-  & { users: Array<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email'>
-  )> }
-);
-
 
 export const CreateGameDocument = gql`
-    mutation createGame($userId: Float!) {
+    mutation createGame($userId: String!) {
   createGame(userId: $userId) {
     id
+    no
     users {
       id
       email
@@ -258,6 +249,7 @@ export const GamesDocument = gql`
     query Games {
   games {
     id
+    no
     users {
       id
       email
@@ -291,7 +283,7 @@ export type GamesQueryHookResult = ReturnType<typeof useGamesQuery>;
 export type GamesLazyQueryHookResult = ReturnType<typeof useGamesLazyQuery>;
 export type GamesQueryResult = ApolloReactCommon.QueryResult<GamesQuery, GamesQueryVariables>;
 export const JoinGameDocument = gql`
-    mutation joinGame($userId: Float!, $gameId: Float!) {
+    mutation joinGame($userId: String!, $gameId: String!) {
   joinGame(userId: $userId, gameId: $gameId) {
     id
     users {
@@ -424,36 +416,3 @@ export function useRegisterMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
-export const UsersDocument = gql`
-    query Users {
-  users {
-    id
-    email
-  }
-}
-    `;
-
-/**
- * __useUsersQuery__
- *
- * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUsersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
-        return ApolloReactHooks.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
-      }
-export function useUsersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
-        }
-export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
-export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
-export type UsersQueryResult = ApolloReactCommon.QueryResult<UsersQuery, UsersQueryVariables>;

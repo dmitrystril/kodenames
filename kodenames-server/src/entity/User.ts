@@ -4,17 +4,17 @@ import {
   Column,
   BaseEntity,
   ManyToOne,
-} from "typeorm";
-import { ObjectType, Field, Int } from "type-graphql";
+} from 'typeorm';
+import { ObjectType, Field, ID } from 'type-graphql';
 
-import { Game } from "./Game";
+import { Game } from './Game';
 
 @ObjectType()
-@Entity("users")
+@Entity('users')
 export class User extends BaseEntity {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
   @Field()
   @Column()

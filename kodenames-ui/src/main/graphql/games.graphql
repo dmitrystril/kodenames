@@ -1,6 +1,7 @@
 query Games {
   games {
     id
+    no
     users {
       id
       email

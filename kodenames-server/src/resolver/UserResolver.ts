@@ -7,7 +7,6 @@ import {
   Field,
   Ctx,
   UseMiddleware,
-  Int,
 } from "type-graphql";
 import { hash, verify } from "argon2";
 
@@ -96,7 +95,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async revokeRefreshTokensForUser(@Arg("userId", () => Int) userId: number) {
+  async revokeRefreshTokensForUser(@Arg("userId", () => String) userId: string) {
     await getConnection()
       .getRepository(User)
       .increment({ id: userId }, "tokenVersion", 1);

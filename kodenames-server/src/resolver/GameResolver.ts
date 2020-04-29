@@ -13,7 +13,7 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  async createGame(@Arg('userId') userId: Number) {
+  async createGame(@Arg('userId') userId: string) {
     try {
       const user = await User.findOne({ where: { id: userId } });
       const game = await Game.create({ users: [user!] }).save();
@@ -26,7 +26,7 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  async joinGame(@Arg('userId') userId: Number, @Arg('gameId') gameId: Number) {
+  async joinGame(@Arg('userId') userId: string, @Arg('gameId') gameId: string) {
     try {
       const user = await User.findOne({ where: { id: userId } });
       let game = await Game.findOne({ where: { id: gameId } });

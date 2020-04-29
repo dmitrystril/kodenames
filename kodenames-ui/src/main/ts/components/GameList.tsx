@@ -62,7 +62,7 @@ export const GameList: React.FC<GameListProps> = ({ gamesData }) => {
       {gamesData &&
         gamesData.games.map((game: any) => (
           <GameListRow key={game.id}>
-            <GameNumberCell>Game #{game.id}</GameNumberCell>
+            <GameNumberCell>Game #{game.no}</GameNumberCell>
 
             <PlayersCell>
               <div>
