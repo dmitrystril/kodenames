@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Header from '../../components/Header';
+import Header from '../../components/shared/Header';
 import { PUZZLE_IMAGE } from '../../../resources/styles/images/svg/svgBase64';
 import { Pages } from '../../constants/Pages';
 import {
@@ -10,7 +10,7 @@ import {
   useGamesQuery,
   useCurrentUserQuery,
 } from '../../generated/graphql';
-import { GameList } from '../../components/GameList';
+import { GameList } from '../../components/lobby/GameList';
 
 const Root = styled.div`
   display: flex;

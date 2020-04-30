@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Table } from '../../components/Table';
-import { Log } from '../../components/Log';
-import { Chat } from '../../components/Chat';
-import Header from '../../components/Header';
+import { Table } from '../../components/game/Table';
+import { Log } from '../../components/game/Log';
+import { Chat } from '../../components/game/Chat';
+import Header from '../../components/shared/Header';
 
 const Root = styled.div`
   display: flex;

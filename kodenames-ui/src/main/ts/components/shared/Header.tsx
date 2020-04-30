@@ -2,9 +2,9 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Pages } from '../constants/Pages';
-import { useCurrentUserQuery, useLogoutMutation } from '../generated/graphql';
-import { setAccessToken } from '../../../accessToken';
+import { Pages } from '../../constants/Pages';
+import { useCurrentUserQuery, useLogoutMutation } from '../../generated/graphql';
+import { setAccessToken } from '../../../../accessToken';
 import { withRouter } from 'react-router';
 
 const Root = styled.div`
