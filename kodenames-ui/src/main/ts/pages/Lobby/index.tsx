@@ -11,6 +11,7 @@ import {
   useCurrentUserQuery,
 } from '../../generated/graphql';
 import { GameList } from '../../components/lobby/GameList';
+import { Button } from '../../components/shared/Button';
 
 const Root = styled.div`
   display: flex;
@@ -39,11 +40,7 @@ const ControlPanel = styled.div`
   padding: 10px 0;
 `;
 
-const Button = styled.button`
-  padding: 5px;
-  border: 1px solid silver;
-  border-radius: 3px;
-  cursor: pointer;
+const CustomButton = styled(Button)`
   margin-right: 5px;
 `;
 
@@ -76,8 +73,10 @@ export const Lobby: React.FC = () => {
       <Header />
       <GameListWrapper>
         <ControlPanel>
-          <Button onClick={handleCreateGame}>Create new game</Button>
-          <Button onClick={handleRefreshList}>Refresh list</Button>
+          <CustomButton onClick={handleCreateGame}>
+            Create new game
+          </CustomButton>
+          <CustomButton onClick={handleRefreshList}>Refresh list</CustomButton>
         </ControlPanel>
 
         <GameList gamesData={gamesData} />

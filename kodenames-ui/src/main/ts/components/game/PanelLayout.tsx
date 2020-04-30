@@ -7,7 +7,7 @@ const Root = styled.div`
   border: 1px solid #ccbfaa;
   border-radius: 3px;
   height: 100%;
-  background-color: #ffefd5;
+  background-color: #ccbfaa;
   padding: 2px;
 `;
 
@@ -21,9 +21,11 @@ const Title = styled.h6`
 interface PanelLayoutProps {
   title: string;
   children: React.ReactNode;
-};
+}
 
-export const PanelLayout: React.FC<PanelLayoutProps> = (props: PanelLayoutProps) => (
+export const PanelLayout: React.FC<PanelLayoutProps> = (
+  props: PanelLayoutProps,
+) => (
   <Root>
     <Title>{props.title}</Title>
     {props.children}

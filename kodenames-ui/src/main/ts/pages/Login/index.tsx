@@ -11,6 +11,7 @@ import {
 import { setAccessToken } from '../../../../accessToken';
 import ErrorTypes from '../../ErrorTypes';
 import { PUZZLE_IMAGE } from '../../../resources/styles/images/svg/svgBase64';
+import { Button } from '../../components/shared/Button';
 
 const Root = styled.div`
   display: flex;
@@ -69,12 +70,8 @@ const Controls = styled.div`
   margin-top: 10px;
 `;
 
-const Button = styled.input`
-  border: 1px solid silver;
-  border-radius: 3px;
-  font-size: 1rem;
-  padding: 5px 10px;
-  cursor: pointer;
+const CustomButton = styled(Button)`
+  background-color: rgb(128, 120, 107, 0.3);
 `;
 
 export const Login: React.FC = () => {
@@ -151,7 +148,7 @@ export const Login: React.FC = () => {
         </SignupLink>
 
         <Controls>
-          <Button type="submit" value="Log in" />
+          <CustomButton type="submit">Log in</CustomButton>
         </Controls>
       </LoginForm>
     </Root>

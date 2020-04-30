@@ -6,6 +6,7 @@ import { Pages } from '../../constants/Pages';
 import { useRegisterMutation } from '../../generated/graphql';
 import ErrorTypes from '../../ErrorTypes';
 import { PUZZLE_IMAGE } from '../../../resources/styles/images/svg/svgBase64';
+import { Button } from '../../components/shared/Button';
 
 const Root = styled.div`
   display: flex;
@@ -64,12 +65,8 @@ const Controls = styled.div`
   margin-top: 10px;
 `;
 
-const Button = styled.input`
-  border: 1px solid silver;
-  border-radius: 3px;
-  font-size: 1rem;
-  padding: 5px 10px;
-  cursor: pointer;
+const CustomButton = styled(Button)`
+  background-color: rgb(128, 120, 107, 0.3);
 `;
 
 export const Register: React.FC<RouteComponentProps> = ({ history }) => {
@@ -143,7 +140,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
         </SignupLink>
 
         <Controls>
-          <Button type="submit" value="Sing Up" />
+          <CustomButton type="submit">Sing Up</CustomButton>
         </Controls>
       </SignupForm>
     </Root>

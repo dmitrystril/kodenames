@@ -3,9 +3,13 @@ import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Pages } from '../../constants/Pages';
-import { useCurrentUserQuery, useLogoutMutation } from '../../generated/graphql';
+import {
+  useCurrentUserQuery,
+  useLogoutMutation,
+} from '../../generated/graphql';
 import { setAccessToken } from '../../../../accessToken';
 import { withRouter } from 'react-router';
+import { Button } from './Button';
 
 const Root = styled.div`
   display: flex;
@@ -17,30 +21,31 @@ const Root = styled.div`
   border-bottom: 1px solid #ffefd5;
 `;
 
-const LogoutButton = styled.button`
-  padding: 3px 5px;
+const Options = styled.div`
+  margin-right: auto;
+`;
+
+const LoggedInAs = styled.div`
+  justify-content: flex-end;
+`;
+
+const LogoutButton = styled(Button)`
   margin-left: 15px;
-  border: 1px solid silver;
-  border-radius: 3px;
-  cursor: pointer;
 `;
 
 const Header: React.FC<RouteComponentProps> = ({ history }) => {
   const { data, loading } = useCurrentUserQuery();
   const [logout, { client }] = useLogoutMutation();
 
-  let body: any = null;
-  if (loading) {
-    body = null;
-  } else if (data && data.currentUser) {
-    body = <div>logged in as: {data.currentUser.userName || data.currentUser.email}</div>;
-  } else {
-    body = <div>not logged in</div>;
-  }
+  let loggedInAs: string = `logged in as: ${
+    data ? data.currentUser!.userName || data.currentUser!.email : ''
+  }`;
 
   return (
     <Root>
-      {body}
+      <Options>asdad</Options>
+
+      <LoggedInAs>{loggedInAs}</LoggedInAs>
 
       {!loading && data && data.currentUser && (
         <LogoutButton

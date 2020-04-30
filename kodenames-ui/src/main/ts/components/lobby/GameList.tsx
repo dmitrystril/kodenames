@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { Button } from '../shared/Button';
+
 const Root = styled.ul`
   display: flex;
   flex-direction: column;
@@ -40,11 +42,8 @@ const ButtonCell = styled(GameListCell)`
   text-align: right;
 `;
 
-const Button = styled.button`
-  border: 1px solid silver;
-  border-radius: 3px;
-  padding: 5px 10px;
-  cursor: pointer;
+const CustomButton = styled(Button)`
+  background-color: rgb(128, 120, 107, 0.3);
 `;
 
 const UserName = styled.div`
@@ -74,7 +73,7 @@ export const GameList: React.FC<GameListProps> = ({ gamesData }) => {
             </PlayersCell>
 
             <ButtonCell>
-              <Button>Join game</Button>
+              <CustomButton>Join game</CustomButton>
             </ButtonCell>
           </GameListRow>
         ))}
