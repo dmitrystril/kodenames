@@ -93,7 +93,7 @@ export type CurrentUserQuery = (
   { __typename?: 'Query' }
   & { currentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email'>
+    & Pick<User, 'id' | 'email' | 'userName'>
   )> }
 );
 
@@ -138,7 +138,7 @@ export type LoginMutation = (
     & Pick<LoginResponse, 'accessToken'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
+      & Pick<User, 'id' | 'email' | 'userName'>
     ) }
   ) }
 );
@@ -198,6 +198,7 @@ export const CurrentUserDocument = gql`
   currentUser {
     id
     email
+    userName
   }
 }
     `;
@@ -303,6 +304,7 @@ export const LoginDocument = gql`
     user {
       id
       email
+      userName
     }
   }
 }

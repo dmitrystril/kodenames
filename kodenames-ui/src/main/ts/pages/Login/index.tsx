@@ -98,7 +98,6 @@ export const Login: React.FC = () => {
         store.writeQuery<CurrentUserQuery>({
           query: CurrentUserDocument,
           data: {
-            __typename: 'Query',
             currentUser: data.login.user,
           },
         });

@@ -33,7 +33,7 @@ const Header: React.FC<RouteComponentProps> = ({ history }) => {
   if (loading) {
     body = null;
   } else if (data && data.currentUser) {
-    body = <div>logged in as: {data.currentUser.email}</div>;
+    body = <div>logged in as: {data.currentUser.userName || data.currentUser.email}</div>;
   } else {
     body = <div>not logged in</div>;
   }

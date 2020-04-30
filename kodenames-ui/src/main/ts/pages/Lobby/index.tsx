@@ -49,8 +49,8 @@ const Button = styled.button`
 
 export const Lobby: React.FC = () => {
   const history = useHistory();
+  const { data: userData } = useCurrentUserQuery();
   const [createGame] = useCreateGameMutation();
-  const { data: userData, loading } = useCurrentUserQuery();
   const { data: gamesData } = useGamesQuery({
     fetchPolicy: 'network-only',
   });

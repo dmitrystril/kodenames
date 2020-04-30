@@ -12,9 +12,8 @@ const isUserAuthenticated = () => {
   return getAccessToken() !== '';
 };
 
-const PrivateRoute = (props: any) => (
-  <>{isUserAuthenticated() ? props.children : <Redirect to={Pages.LOGIN} />}</>
-);
+const PrivateRoute = (props: any) =>
+  isUserAuthenticated() ? props.children : <Redirect to={Pages.LOGIN} />;
 
 export const Routes: React.FC = () => {
   return (

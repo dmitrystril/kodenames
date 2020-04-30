@@ -69,7 +69,7 @@ export const GameList: React.FC<GameListProps> = ({ gamesData }) => {
                 <u>Players:</u>
               </div>
               {game.users.map((user: any) => (
-                <UserName key={user.id}>{user.email}</UserName>
+                <UserName key={user.id}>{user.userName || user.email}</UserName>
               ))}
             </PlayersCell>
 
