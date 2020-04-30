@@ -3,30 +3,22 @@ import {
   Query,
   Mutation,
   Arg,
-  ObjectType,
-  Field,
   Ctx,
   UseMiddleware,
-} from "type-graphql";
-import { hash, verify } from "argon2";
+} from 'type-graphql';
+import { hash, verify } from 'argon2';
+import { getConnection } from 'typeorm';
 
-import { User } from "../entity/User";
-import MyContext from "../MyContext";
-import { createAccessToken, createRefreshToken } from "../auth";
-import { isAuth } from "../isAUth";
-import { sendRefreshToken } from "../sendRefreshToken";
-import { getConnection } from "typeorm";
-import ErrorTypes from "../error/ErrorTypes";
+import { User } from '../entity/User';
+import MyContext from '../MyContext';
+import { createAccessToken, createRefreshToken } from '../auth';
+import { isAuth } from '../isAUth';
+import { sendRefreshToken } from '../sendRefreshToken';
+import ErrorTypes from '../error/ErrorTypes';
+import { LoginResponse } from './responseType/LoginResponse';
+import { RegisterInput } from './inputType/RegisterInput';
 
-@ObjectType()
-class LoginResponse {
-  @Field()
-  accessToken: string;
-  @Field(() => User)
-  user: User;
-}
-
-@Resolver()
+@Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
   @UseMiddleware(isAuth)
@@ -34,20 +26,13 @@ export class UserResolver {
     return User.findOne(context.payload!.userId);
   }
 
-  @Query(() => [User])
-  @UseMiddleware(isAuth)
-  users(@Ctx() {}: MyContext) {
-    return User.find();
-  }
-
   @Mutation(() => Boolean)
-  async register(
-    @Arg("email") email: string,
-    @Arg("password") password: string
-  ) {
+  async register(@Arg('input') registerInput: RegisterInput) {
+    const { email, password, userName } = registerInput;
+
     const userAlreadyExists = await User.findOne({
       where: { email },
-      select: ["id"],
+      select: ['id'],
     });
 
     if (userAlreadyExists) {
@@ -60,6 +45,7 @@ export class UserResolver {
       await User.insert({
         email,
         password: hashedPassword,
+        userName,
       });
     } catch (error) {
       console.error(error);
@@ -71,9 +57,9 @@ export class UserResolver {
 
   @Mutation(() => LoginResponse)
   async login(
-    @Arg("email") email: string,
-    @Arg("password") password: string,
-    @Ctx() { res }: MyContext
+    @Arg('email') email: string,
+    @Arg('password') password: string,
+    @Ctx() { res }: MyContext,
   ): Promise<LoginResponse> {
     const user = await User.findOne({ where: { email: email } });
 
@@ -95,17 +81,19 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async revokeRefreshTokensForUser(@Arg("userId", () => String) userId: string) {
+  async revokeRefreshTokensForUser(
+    @Arg('userId', () => String) userId: string,
+  ) {
     await getConnection()
       .getRepository(User)
-      .increment({ id: userId }, "tokenVersion", 1);
+      .increment({ id: userId }, 'tokenVersion', 1);
 
     return true;
   }
 
   @Mutation(() => Boolean)
   async logout(@Ctx() { res }: MyContext) {
-    sendRefreshToken(res, "");
+    sendRefreshToken(res, '');
 
     return true;
   }

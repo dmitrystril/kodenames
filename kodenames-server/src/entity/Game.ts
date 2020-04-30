@@ -20,9 +20,9 @@ export class Game extends BaseEntity {
   @Field(() => Int)
   @Column()
   @Generated('increment')
-  no: number;
+  readonly no: number;
 
   @OneToMany(() => User, (user) => user.game, { cascade: true, eager: true })
-  @Field(() => [User], { nullable: true })
+  @Field(() => [User])
   users: User[];
 }

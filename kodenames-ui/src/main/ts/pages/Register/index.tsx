@@ -75,14 +75,18 @@ const Button = styled.input`
 export const Register: React.FC<RouteComponentProps> = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState('');
   const [register] = useRegisterMutation();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const isRegistered = await register({
       variables: {
-        email,
-        password,
+        input: {
+          email,
+          password,
+          userName,
+        },
       },
     }).catch((error) => {
       if (error.message.includes(ErrorTypes.EMAIL_IS_ALREADY_TAKEN)) {
@@ -99,6 +103,15 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
     <Root>
       <SignupForm onSubmit={handleSubmit}>
         <Title>Sign Up</Title>
+
+        <InputGroup>
+          <InputLabel htmlFor="userName">User name:</InputLabel>
+          <TextInput
+            name="userName"
+            type="text"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </InputGroup>
 
         <InputGroup>
           <InputLabel htmlFor="email">Email:</InputLabel>

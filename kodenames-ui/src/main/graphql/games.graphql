@@ -4,6 +4,7 @@ query Games {
     no
     users {
       id
+      userName
       email
     }
   }

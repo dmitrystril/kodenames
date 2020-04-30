@@ -14,7 +14,6 @@ export type Scalars = {
 export type Query = {
    __typename?: 'Query';
   currentUser?: Maybe<User>;
-  users: Array<User>;
   games: Array<Game>;
 };
 
@@ -22,14 +21,15 @@ export type User = {
    __typename?: 'User';
   id: Scalars['ID'];
   email: Scalars['String'];
-  game?: Maybe<Game>;
+  userName: Scalars['String'];
+  game: Game;
 };
 
 export type Game = {
    __typename?: 'Game';
   id: Scalars['ID'];
   no: Scalars['Int'];
-  users?: Maybe<Array<User>>;
+  users: Array<User>;
 };
 
 export type Mutation = {
@@ -44,8 +44,7 @@ export type Mutation = {
 
 
 export type MutationRegisterArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
+  input: RegisterInput;
 };
 
 
@@ -60,14 +59,14 @@ export type MutationRevokeRefreshTokensForUserArgs = {
 };
 
 
-export type MutationCreateGameArgs = {
-  userId: Scalars['String'];
-};
-
-
 export type MutationJoinGameArgs = {
   gameId: Scalars['String'];
-  userId: Scalars['String'];
+};
+
+export type RegisterInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  userName?: Maybe<Scalars['String']>;
 };
 
 export type LoginResponse = {
@@ -76,20 +75,14 @@ export type LoginResponse = {
   user: User;
 };
 
-export type CreateGameMutationVariables = {
-  userId: Scalars['String'];
-};
+export type CreateGameMutationVariables = {};
 
 
 export type CreateGameMutation = (
   { __typename?: 'Mutation' }
   & { createGame: (
     { __typename?: 'Game' }
-    & Pick<Game, 'id' | 'no'>
-    & { users?: Maybe<Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
-    )>> }
+    & Pick<Game, 'id'>
   ) }
 );
 
@@ -112,15 +105,14 @@ export type GamesQuery = (
   & { games: Array<(
     { __typename?: 'Game' }
     & Pick<Game, 'id' | 'no'>
-    & { users?: Maybe<Array<(
+    & { users: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
-    )>> }
+      & Pick<User, 'id' | 'userName' | 'email'>
+    )> }
   )> }
 );
 
 export type JoinGameMutationVariables = {
-  userId: Scalars['String'];
   gameId: Scalars['String'];
 };
 
@@ -130,10 +122,6 @@ export type JoinGameMutation = (
   & { joinGame: (
     { __typename?: 'Game' }
     & Pick<Game, 'id'>
-    & { users?: Maybe<Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
-    )>> }
   ) }
 );
 
@@ -164,8 +152,7 @@ export type LogoutMutation = (
 );
 
 export type RegisterMutationVariables = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  input: RegisterInput;
 };
 
 
@@ -176,14 +163,9 @@ export type RegisterMutation = (
 
 
 export const CreateGameDocument = gql`
-    mutation createGame($userId: String!) {
-  createGame(userId: $userId) {
+    mutation createGame {
+  createGame {
     id
-    no
-    users {
-      id
-      email
-    }
   }
 }
     `;
@@ -202,7 +184,6 @@ export type CreateGameMutationFn = ApolloReactCommon.MutationFunction<CreateGame
  * @example
  * const [createGameMutation, { data, loading, error }] = useCreateGameMutation({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -252,6 +233,7 @@ export const GamesDocument = gql`
     no
     users {
       id
+      userName
       email
     }
   }
@@ -283,13 +265,9 @@ export type GamesQueryHookResult = ReturnType<typeof useGamesQuery>;
 export type GamesLazyQueryHookResult = ReturnType<typeof useGamesLazyQuery>;
 export type GamesQueryResult = ApolloReactCommon.QueryResult<GamesQuery, GamesQueryVariables>;
 export const JoinGameDocument = gql`
-    mutation joinGame($userId: String!, $gameId: String!) {
-  joinGame(userId: $userId, gameId: $gameId) {
+    mutation joinGame($gameId: String!) {
+  joinGame(gameId: $gameId) {
     id
-    users {
-      id
-      email
-    }
   }
 }
     `;
@@ -308,7 +286,6 @@ export type JoinGameMutationFn = ApolloReactCommon.MutationFunction<JoinGameMuta
  * @example
  * const [joinGameMutation, { data, loading, error }] = useJoinGameMutation({
  *   variables: {
- *      userId: // value for 'userId'
  *      gameId: // value for 'gameId'
  *   },
  * });
@@ -386,8 +363,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
-    mutation Register($email: String!, $password: String!) {
-  register(email: $email, password: $password)
+    mutation Register($input: RegisterInput!) {
+  register(input: $input)
 }
     `;
 export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMutation, RegisterMutationVariables>;
@@ -405,8 +382,7 @@ export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMuta
  * @example
  * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
+ *      input: // value for 'input'
  *   },
  * });
  */

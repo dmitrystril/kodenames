@@ -1,9 +1,5 @@
-mutation joinGame($userId: String!, $gameId: String!) {
-  joinGame(userId: $userId, gameId: $gameId) {
-    id,
-    users {
-      id
-      email
-    }
+mutation joinGame($gameId: String!) {
+  joinGame(gameId: $gameId) {
+    id
   }
 }

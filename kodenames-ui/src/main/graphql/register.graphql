@@ -1,3 +1,9 @@
-mutation Register($email: String!, $password: String!) {
-  register(email: $email, password: $password)
+input RegisterInput {
+  email: String!
+  password: String!
+  userName: String
+}
+
+mutation Register($input: RegisterInput!) {
+  register(input: $input)
 }

@@ -1,10 +1,5 @@
-mutation createGame($userId: String!) {
-  createGame(userId: $userId) {
+mutation createGame {
+  createGame {
     id
-    no
-    users {
-      id
-      email
-    }
   }
 }

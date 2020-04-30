@@ -1,8 +1,16 @@
-import { Resolver, Query, UseMiddleware, Mutation, Arg } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  UseMiddleware,
+  Mutation,
+  Arg,
+  Ctx,
+} from 'type-graphql';
 
 import { isAuth } from '../isAUth';
 import { Game } from '../entity/Game';
 import { User } from '../entity/User';
+import MyContext from 'src/MyContext';
 
 @Resolver()
 export class GameResolver {
@@ -13,9 +21,12 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  async createGame(@Arg('userId') userId: string) {
+  @UseMiddleware(isAuth)
+  async createGame(@Ctx() context: MyContext) {
     try {
-      const user = await User.findOne({ where: { id: userId } });
+      const user = await User.findOne({
+        where: { id: context.payload!.userId },
+      });
       const game = await Game.create({ users: [user!] }).save();
 
       return game;
@@ -26,9 +37,12 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  async joinGame(@Arg('userId') userId: string, @Arg('gameId') gameId: string) {
+  @UseMiddleware(isAuth)
+  async joinGame(@Ctx() context: MyContext, @Arg('gameId') gameId: string) {
     try {
-      const user = await User.findOne({ where: { id: userId } });
+      const user = await User.findOne({
+        where: { id: context.payload!.userId },
+      });
       let game = await Game.findOne({ where: { id: gameId } });
 
       if (game) {

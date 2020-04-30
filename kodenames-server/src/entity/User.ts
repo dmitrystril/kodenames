@@ -20,8 +20,12 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
+  @Field()
+  @Column({ nullable: true })
+  userName?: string;
+
   @ManyToOne(() => Game, (game) => game.users)
-  @Field(() => Game, { nullable: true })
+  @Field(() => Game)
   game: Game;
 
   @Column()
