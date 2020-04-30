@@ -52,14 +52,14 @@ const UserName = styled.div`
 `;
 
 interface GameListProps {
-  gamesData: any;
+  gameData: any;
 }
 
-export const GameList: React.FC<GameListProps> = ({ gamesData }) => {
+export const GameList: React.FC<GameListProps> = ({ gameData }) => {
   return (
     <Root>
-      {gamesData &&
-        gamesData.games.map((game: any) => (
+      {gameData &&
+        gameData.games.map((game: any) => (
           <GameListRow key={game.id}>
             <GameNumberCell>Game #{game.no}</GameNumberCell>
 

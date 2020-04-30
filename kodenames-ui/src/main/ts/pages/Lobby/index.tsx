@@ -48,7 +48,7 @@ export const Lobby: React.FC = () => {
   const history = useHistory();
   const { data: userData } = useCurrentUserQuery();
   const [createGame] = useCreateGameMutation();
-  const { data: gamesData } = useGamesQuery({
+  const { data: gameData, refetch: loadGames } = useGamesQuery({
     fetchPolicy: 'network-only',
   });
 
@@ -66,7 +66,9 @@ export const Lobby: React.FC = () => {
     }
   };
 
-  const handleRefreshList = async () => {};
+  const handleRefreshList = async () => {
+    loadGames();
+  };
 
   return (
     <Root>
@@ -79,7 +81,7 @@ export const Lobby: React.FC = () => {
           <CustomButton onClick={handleRefreshList}>Refresh list</CustomButton>
         </ControlPanel>
 
-        <GameList gamesData={gamesData} />
+        <GameList gameData={gameData} />
       </GameListWrapper>
     </Root>
   );
