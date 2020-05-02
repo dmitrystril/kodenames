@@ -1,15 +1,8 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Arg,
-  Ctx,
-  Authorized,
-} from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from 'type-graphql';
 
 import { Game } from '../entity/Game';
 import { User } from '../entity/User';
-import MyContext from 'src/MyContext';
+import MyContext from '../MyContext';
 
 @Resolver()
 export class GameResolver {
