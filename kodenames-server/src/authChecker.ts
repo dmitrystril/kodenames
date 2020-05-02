@@ -1,13 +1,13 @@
-import { Middleware } from "type-graphql/dist/interfaces/Middleware";
 import { verify } from 'jsonwebtoken';
+import { AuthChecker } from 'type-graphql';
 
-import MyContext from "./MyContext";
+import MyContext from './MyContext';
 
-export const isAuth: Middleware<MyContext> = ({ context }, next) => {
+export const authChecker: AuthChecker<MyContext> = ({ context } /*roles*/) => {
   const authorization = context.req.headers['authorization'];
 
   if (!authorization) {
-    throw new Error('not authenticated');
+    return false;
   }
 
   try {
@@ -16,9 +16,8 @@ export const isAuth: Middleware<MyContext> = ({ context }, next) => {
     context.payload = payload as any;
   } catch (error) {
     console.error(error);
-    throw new Error('not authenticated');
+    return false;
   }
 
-  return next();
+  return true;
 };
-

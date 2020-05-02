@@ -1,30 +1,31 @@
-import "dotenv/config";
-import "reflect-metadata";
-import express from "express";
-import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import { createConnection } from "typeorm";
-import cookieParser from "cookie-parser";
-import { verify } from "jsonwebtoken";
-import cors from "cors";
+import 'dotenv/config';
+import 'reflect-metadata';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
+import cookieParser from 'cookie-parser';
+import { verify } from 'jsonwebtoken';
+import cors from 'cors';
 
-import { UserResolver } from "./resolver/UserResolver";
-import { User } from "./entity/User";
-import { createAccessToken, createRefreshToken } from "./auth";
-import { sendRefreshToken, sendRefreshTokenReject } from "./sendRefreshToken";
-import { GameResolver } from "./resolver/GameResolver";
+import { UserResolver } from './resolver/UserResolver';
+import { User } from './entity/User';
+import { createAccessToken, createRefreshToken } from './auth';
+import { sendRefreshToken, sendRefreshTokenReject } from './sendRefreshToken';
+import { GameResolver } from './resolver/GameResolver';
+import { authChecker } from './authChecker';
 
 (async () => {
   const app = express();
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: 'http://localhost:3000',
       credentials: true,
-    })
+    }),
   );
   app.use(cookieParser());
 
-  app.post("/refresh_token", async (req, res) => {
+  app.post('/refresh_token', async (req, res) => {
     const token = req.cookies.token;
     if (!token) {
       return sendRefreshTokenReject(res);
@@ -57,6 +58,7 @@ import { GameResolver } from "./resolver/GameResolver";
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, GameResolver],
+      authChecker,
     }),
     context: ({ req, res }) => ({ req, res }),
     formatError: (err) => {
@@ -68,6 +70,6 @@ import { GameResolver } from "./resolver/GameResolver";
   apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
-    console.log("express server started");
+    console.log('express server started');
   });
 })();

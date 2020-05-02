@@ -4,7 +4,7 @@ import {
   Mutation,
   Arg,
   Ctx,
-  UseMiddleware,
+  Authorized,
 } from 'type-graphql';
 import { hash, verify } from 'argon2';
 import { getConnection } from 'typeorm';
@@ -12,7 +12,6 @@ import { getConnection } from 'typeorm';
 import { User } from '../entity/User';
 import MyContext from '../MyContext';
 import { createAccessToken, createRefreshToken } from '../auth';
-import { isAuth } from '../isAUth';
 import { sendRefreshToken } from '../sendRefreshToken';
 import ErrorTypes from '../error/ErrorTypes';
 import { LoginResponse } from './responseType/LoginResponse';
@@ -21,7 +20,7 @@ import { RegisterInput } from './inputType/RegisterInput';
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  @UseMiddleware(isAuth)
+  @Authorized()
   currentUser(@Ctx() context: MyContext) {
     return User.findOne(context.payload!.userId);
   }
@@ -92,6 +91,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @Authorized()
   async logout(@Ctx() { res }: MyContext) {
     sendRefreshToken(res, '');
 

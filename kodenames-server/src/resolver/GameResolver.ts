@@ -1,13 +1,12 @@
 import {
   Resolver,
   Query,
-  UseMiddleware,
   Mutation,
   Arg,
   Ctx,
+  Authorized,
 } from 'type-graphql';
 
-import { isAuth } from '../isAUth';
 import { Game } from '../entity/Game';
 import { User } from '../entity/User';
 import MyContext from 'src/MyContext';
@@ -15,7 +14,7 @@ import MyContext from 'src/MyContext';
 @Resolver()
 export class GameResolver {
   @Query(() => [Game])
-  @UseMiddleware(isAuth)
+  @Authorized()
   games() {
     return Game.find({
       order: {
@@ -25,7 +24,7 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  @UseMiddleware(isAuth)
+  @Authorized()
   async createGame(@Ctx() context: MyContext) {
     try {
       const user = await User.findOne({
@@ -39,7 +38,7 @@ export class GameResolver {
   }
 
   @Mutation(() => Game)
-  @UseMiddleware(isAuth)
+  @Authorized()
   async joinGame(@Ctx() context: MyContext, @Arg('gameId') gameId: string) {
     try {
       const user = await User.findOne({
@@ -57,7 +56,7 @@ export class GameResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
+  @Authorized()
   async quitGame(@Ctx() context: MyContext, @Arg('gameId') gameId: string) {
     const userId = context.payload?.userId;
     try {
@@ -75,7 +74,7 @@ export class GameResolver {
   }
 
   @Query(() => Game, { nullable: true })
-  @UseMiddleware(isAuth)
+  @Authorized()
   async currentGame(@Ctx() context: MyContext) {
     try {
       const user = await User.findOne({
