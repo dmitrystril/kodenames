@@ -33,21 +33,23 @@ const LogoutButton = styled(Button)`
   margin-left: 15px;
 `;
 
-const Header: React.FC<RouteComponentProps> = ({ history }) => {
+const Header: React.FC<RouteComponentProps> = ({ history, children }) => {
   const { data, loading } = useCurrentUserQuery();
+  const currentUser = data && data.currentUser;
+
   const [logout, { client }] = useLogoutMutation();
 
-  let loggedInAs: string = `logged in as: ${
-    data ? data.currentUser!.userName || data.currentUser!.email : ''
-  }`;
+  const loggedInAs: string = currentUser
+    ? currentUser.userName || currentUser.email
+    : '';
 
   return (
     <Root>
-      <Options>asdad</Options>
+      <Options>{children}</Options>
 
       <LoggedInAs>{loggedInAs}</LoggedInAs>
 
-      {!loading && data && data.currentUser && (
+      {!loading && currentUser && (
         <LogoutButton
           onClick={async () => {
             await logout();
@@ -56,7 +58,7 @@ const Header: React.FC<RouteComponentProps> = ({ history }) => {
             await client!.resetStore();
           }}
         >
-          Log out
+          Log Out
         </LogoutButton>
       )}
     </Root>

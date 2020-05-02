@@ -15,6 +15,7 @@ export type Query = {
    __typename?: 'Query';
   currentUser?: Maybe<User>;
   games: Array<Game>;
+  currentGame?: Maybe<Game>;
 };
 
 export type User = {
@@ -40,6 +41,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   createGame: Game;
   joinGame: Game;
+  quitGame: Scalars['Boolean'];
 };
 
 
@@ -60,6 +62,11 @@ export type MutationRevokeRefreshTokensForUserArgs = {
 
 
 export type MutationJoinGameArgs = {
+  gameId: Scalars['String'];
+};
+
+
+export type MutationQuitGameArgs = {
   gameId: Scalars['String'];
 };
 
@@ -84,6 +91,32 @@ export type CreateGameMutation = (
     { __typename?: 'Game' }
     & Pick<Game, 'id'>
   ) }
+);
+
+export type CurrentGameQueryVariables = {};
+
+
+export type CurrentGameQuery = (
+  { __typename?: 'Query' }
+  & { currentGame?: Maybe<(
+    { __typename?: 'Game' }
+    & Pick<Game, 'id'>
+    & { users: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'userName'>
+    )> }
+  )> }
+);
+
+export type CurrentGameIdQueryVariables = {};
+
+
+export type CurrentGameIdQuery = (
+  { __typename?: 'Query' }
+  & { currentGame?: Maybe<(
+    { __typename?: 'Game' }
+    & Pick<Game, 'id'>
+  )> }
 );
 
 export type CurrentUserQueryVariables = {};
@@ -151,6 +184,16 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
+export type QuitGameMutationVariables = {
+  gameId: Scalars['String'];
+};
+
+
+export type QuitGameMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'quitGame'>
+);
+
 export type RegisterMutationVariables = {
   input: RegisterInput;
 };
@@ -193,6 +236,75 @@ export function useCreateGameMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
 export type CreateGameMutationResult = ApolloReactCommon.MutationResult<CreateGameMutation>;
 export type CreateGameMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
+export const CurrentGameDocument = gql`
+    query currentGame {
+  currentGame {
+    id
+    users {
+      id
+      email
+      userName
+    }
+  }
+}
+    `;
+
+/**
+ * __useCurrentGameQuery__
+ *
+ * To run a query within a React component, call `useCurrentGameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentGameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentGameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentGameQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentGameQuery, CurrentGameQueryVariables>) {
+        return ApolloReactHooks.useQuery<CurrentGameQuery, CurrentGameQueryVariables>(CurrentGameDocument, baseOptions);
+      }
+export function useCurrentGameLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentGameQuery, CurrentGameQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CurrentGameQuery, CurrentGameQueryVariables>(CurrentGameDocument, baseOptions);
+        }
+export type CurrentGameQueryHookResult = ReturnType<typeof useCurrentGameQuery>;
+export type CurrentGameLazyQueryHookResult = ReturnType<typeof useCurrentGameLazyQuery>;
+export type CurrentGameQueryResult = ApolloReactCommon.QueryResult<CurrentGameQuery, CurrentGameQueryVariables>;
+export const CurrentGameIdDocument = gql`
+    query currentGameId {
+  currentGame {
+    id
+  }
+}
+    `;
+
+/**
+ * __useCurrentGameIdQuery__
+ *
+ * To run a query within a React component, call `useCurrentGameIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentGameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentGameIdQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentGameIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentGameIdQuery, CurrentGameIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<CurrentGameIdQuery, CurrentGameIdQueryVariables>(CurrentGameIdDocument, baseOptions);
+      }
+export function useCurrentGameIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentGameIdQuery, CurrentGameIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CurrentGameIdQuery, CurrentGameIdQueryVariables>(CurrentGameIdDocument, baseOptions);
+        }
+export type CurrentGameIdQueryHookResult = ReturnType<typeof useCurrentGameIdQuery>;
+export type CurrentGameIdLazyQueryHookResult = ReturnType<typeof useCurrentGameIdLazyQuery>;
+export type CurrentGameIdQueryResult = ApolloReactCommon.QueryResult<CurrentGameIdQuery, CurrentGameIdQueryVariables>;
 export const CurrentUserDocument = gql`
     query currentUser {
   currentUser {
@@ -364,6 +476,36 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const QuitGameDocument = gql`
+    mutation quitGame($gameId: String!) {
+  quitGame(gameId: $gameId)
+}
+    `;
+export type QuitGameMutationFn = ApolloReactCommon.MutationFunction<QuitGameMutation, QuitGameMutationVariables>;
+
+/**
+ * __useQuitGameMutation__
+ *
+ * To run a mutation, you first call `useQuitGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useQuitGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [quitGameMutation, { data, loading, error }] = useQuitGameMutation({
+ *   variables: {
+ *      gameId: // value for 'gameId'
+ *   },
+ * });
+ */
+export function useQuitGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<QuitGameMutation, QuitGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<QuitGameMutation, QuitGameMutationVariables>(QuitGameDocument, baseOptions);
+      }
+export type QuitGameMutationHookResult = ReturnType<typeof useQuitGameMutation>;
+export type QuitGameMutationResult = ApolloReactCommon.MutationResult<QuitGameMutation>;
+export type QuitGameMutationOptions = ApolloReactCommon.BaseMutationOptions<QuitGameMutation, QuitGameMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($input: RegisterInput!) {
   register(input: $input)

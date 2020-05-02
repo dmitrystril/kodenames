@@ -1,0 +1,3 @@
+mutation quitGame($gameId: String!) {
+  quitGame(gameId: $gameId)
+}

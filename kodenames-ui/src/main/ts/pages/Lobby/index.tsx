@@ -8,7 +8,8 @@ import { Pages } from '../../constants/Pages';
 import {
   useCreateGameMutation,
   useGamesQuery,
-  useCurrentUserQuery,
+  useJoinGameMutation,
+  useCurrentGameIdQuery,
 } from '../../generated/graphql';
 import { GameList } from '../../components/lobby/GameList';
 import { Button } from '../../components/shared/Button';
@@ -46,18 +47,20 @@ const CustomButton = styled(Button)`
 
 export const Lobby: React.FC = () => {
   const history = useHistory();
-  const { data: userData } = useCurrentUserQuery();
   const [createGame] = useCreateGameMutation();
-  const { data: gameData, refetch: loadGames } = useGamesQuery({
+  const [joinGame] = useJoinGameMutation();
+  const { data: gamesData, refetch: loadGames } = useGamesQuery({
     fetchPolicy: 'network-only',
   });
+  const games = gamesData && gamesData.games;
+
+  const { data: currentGameIdData } = useCurrentGameIdQuery({
+    fetchPolicy: 'network-only',
+  });
+  const currentGameId = currentGameIdData && currentGameIdData.currentGame!.id;
 
   const handleCreateGame = async () => {
-    const game = await createGame({
-      variables: {
-        userId: userData!.currentUser!.id,
-      },
-    }).catch((error) => {
+    const game = await createGame().catch((error) => {
       console.error('game not created', error);
     });
 
@@ -66,8 +69,22 @@ export const Lobby: React.FC = () => {
     }
   };
 
-  const handleRefreshList = async () => {
+  const handleRefreshList = () => {
     loadGames();
+  };
+
+  const handleJoinGame = async (gameId: string) => {
+    const game = await joinGame({
+      variables: {
+        gameId,
+      },
+    }).catch((error) => {
+      console.error("can't join game", error);
+    });
+
+    if (game) {
+      history.push(Pages.GAME);
+    }
   };
 
   return (
@@ -76,12 +93,16 @@ export const Lobby: React.FC = () => {
       <GameListWrapper>
         <ControlPanel>
           <CustomButton onClick={handleCreateGame}>
-            Create new game
+            Create New Game
           </CustomButton>
-          <CustomButton onClick={handleRefreshList}>Refresh list</CustomButton>
+          <CustomButton onClick={handleRefreshList}>Refresh List</CustomButton>
         </ControlPanel>
 
-        <GameList gameData={gameData} />
+        <GameList
+          games={games}
+          onJoinGame={handleJoinGame}
+          currentGameId={currentGameId}
+        />
       </GameListWrapper>
     </Root>
   );

@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import { Table } from '../../components/game/Table';
 import { Log } from '../../components/game/Log';
 import { Chat } from '../../components/game/Chat';
 import Header from '../../components/shared/Header';
+import { Button } from '../../components/shared/Button';
+import { useCurrentGameQuery } from '../../generated/graphql';
+import { Pages } from '../../constants/Pages';
 
 const Root = styled.div`
   display: flex;
@@ -33,9 +37,23 @@ const ColumnTwo = styled.div`
 `;
 
 export const Game: React.FC = () => {
+  const history = useHistory();
+  const { data } = useCurrentGameQuery();
+  const currentGame = data && data.currentGame;
+
+  console.log('data: ', currentGame);
+
+  const handleNavigateToLobby = async () => {
+    history.push(Pages.LOBBY);
+  };
+
   return (
     <Root>
-      <Header />
+      <Header>
+        <Button onClick={() => handleNavigateToLobby()}>
+          &#x21A9; Back to Lobby
+        </Button>
+      </Header>
 
       <GameLayout>
         <ColumnOne>

@@ -1,0 +1,10 @@
+query currentGame {
+  currentGame {
+    id
+    users {
+      id
+      email
+      userName
+    }
+  }
+}

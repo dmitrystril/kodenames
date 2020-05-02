@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../shared/Button';
+import { useCurrentUserQuery } from '../../generated/graphql';
 
 const Root = styled.ul`
   display: flex;
@@ -52,14 +53,20 @@ const UserName = styled.div`
 `;
 
 interface GameListProps {
-  gameData: any;
+  games: any;
+  currentGameId?: string;
+  onJoinGame: Function;
 }
 
-export const GameList: React.FC<GameListProps> = ({ gameData }) => {
+export const GameList: React.FC<GameListProps> = ({
+  games,
+  currentGameId,
+  onJoinGame,
+}) => {
   return (
     <Root>
-      {gameData &&
-        gameData.games.map((game: any) => (
+      {games &&
+        games.map((game: any) => (
           <GameListRow key={game.id}>
             <GameNumberCell>Game #{game.no}</GameNumberCell>
 
@@ -73,7 +80,9 @@ export const GameList: React.FC<GameListProps> = ({ gameData }) => {
             </PlayersCell>
 
             <ButtonCell>
-              <CustomButton>Join game</CustomButton>
+              <CustomButton onClick={() => onJoinGame(game.id)}>
+                {currentGameId != game.id ? 'Join Game' : 'Back to Game'}
+              </CustomButton>
             </ButtonCell>
           </GameListRow>
         ))}
