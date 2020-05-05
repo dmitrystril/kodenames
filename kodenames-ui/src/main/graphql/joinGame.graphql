@@ -1,5 +1,0 @@
-mutation joinGame($gameId: String!) {
-  joinGame(gameId: $gameId) {
-    id
-  }
-}

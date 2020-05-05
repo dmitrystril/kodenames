@@ -5,7 +5,7 @@ import { Pages } from './main/ts/constants/Pages';
 import { Register } from './main/ts/pages/Register';
 import { Login } from './main/ts/pages/Login';
 import { Lobby } from './main/ts/pages/Lobby';
-import { Game } from './main/ts/pages/Game';
+import { Room } from './main/ts/pages/Room';
 import { getAccessToken } from './accessToken';
 
 const isUserAuthenticated = () => {
@@ -24,7 +24,7 @@ export const Routes: React.FC = () => {
 
         <PrivateRoute>
           <Route exact path={Pages.LOBBY} component={Lobby} />
-          <Route exact path={Pages.GAME} component={Game} />
+          <Route exact path={Pages.ROOM} component={Room} />
           <Redirect from="/**" to={Pages.LOBBY} />
         </PrivateRoute>
 

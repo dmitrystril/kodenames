@@ -1,0 +1,3 @@
+mutation quitRoom($roomId: String!) {
+  quitRoom(roomId: $roomId)
+}

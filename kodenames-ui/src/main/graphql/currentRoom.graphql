@@ -1,11 +1,10 @@
-query Games {
-  games {
+query currentRoom {
+  currentRoom {
     id
-    no
     users {
       id
-      userName
       email
+      userName
     }
   }
 }

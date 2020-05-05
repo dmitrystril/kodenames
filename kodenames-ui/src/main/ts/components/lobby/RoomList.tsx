@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../shared/Button';
-import { useCurrentUserQuery } from '../../generated/graphql';
 
 const Root = styled.ul`
   display: flex;
@@ -12,7 +11,7 @@ const Root = styled.ul`
   height: 100%;
 `;
 
-const GameListRow = styled.li`
+const RoomListRow = styled.li`
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -26,19 +25,19 @@ const GameListRow = styled.li`
   }
 `;
 
-const GameListCell = styled.div`
+const RoomListCell = styled.div`
   padding: 20px;
 `;
 
-const GameNumberCell = styled(GameListCell)`
+const RoomNumberCell = styled(RoomListCell)`
   width: 20%;
 `;
 
-const PlayersCell = styled(GameListCell)`
+const PlayersCell = styled(RoomListCell)`
   width: 40%;
 `;
 
-const ButtonCell = styled(GameListCell)`
+const ButtonCell = styled(RoomListCell)`
   width: 40%;
   text-align: right;
 `;
@@ -52,39 +51,39 @@ const UserName = styled.div`
   overflow: hidden;
 `;
 
-interface GameListProps {
-  games: any;
-  currentGameId?: string;
-  onJoinGame: Function;
+interface RoomListProps {
+  rooms: any;
+  currentRoomId?: string;
+  onJoinRoom: Function;
 }
 
-export const GameList: React.FC<GameListProps> = ({
-  games,
-  currentGameId,
-  onJoinGame,
+export const RoomList: React.FC<RoomListProps> = ({
+  rooms,
+  currentRoomId,
+  onJoinRoom,
 }) => {
   return (
     <Root>
-      {games &&
-        games.map((game: any) => (
-          <GameListRow key={game.id}>
-            <GameNumberCell>Game #{game.no}</GameNumberCell>
+      {rooms &&
+        rooms.map((room: any) => (
+          <RoomListRow key={room.id}>
+            <RoomNumberCell>Room #{room.no}</RoomNumberCell>
 
             <PlayersCell>
               <div>
                 <u>Players:</u>
               </div>
-              {game.users.map((user: any) => (
+              {room.users.map((user: any) => (
                 <UserName key={user.id}>{user.userName || user.email}</UserName>
               ))}
             </PlayersCell>
 
             <ButtonCell>
-              <CustomButton onClick={() => onJoinGame(game.id)}>
-                {currentGameId != game.id ? 'Join Game' : 'Back to Game'}
+              <CustomButton onClick={() => onJoinRoom(room.id)}>
+                {currentRoomId !== room.id ? 'Join Room' : 'Back to Room'}
               </CustomButton>
             </ButtonCell>
-          </GameListRow>
+          </RoomListRow>
         ))}
     </Root>
   );

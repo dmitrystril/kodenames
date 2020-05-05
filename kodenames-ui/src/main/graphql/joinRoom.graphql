@@ -1,0 +1,5 @@
+mutation joinRoom($roomId: String!) {
+  joinRoom(roomId: $roomId) {
+    id
+  }
+}

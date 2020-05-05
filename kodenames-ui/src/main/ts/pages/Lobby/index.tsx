@@ -6,12 +6,12 @@ import Header from '../../components/shared/Header';
 import { PUZZLE_IMAGE } from '../../../resources/styles/images/svg/svgBase64';
 import { Pages } from '../../constants/Pages';
 import {
-  useCreateGameMutation,
-  useGamesQuery,
-  useJoinGameMutation,
-  useCurrentGameIdQuery,
+  useCreateRoomMutation,
+  useRoomsQuery,
+  useJoinRoomMutation,
+  useCurrentRoomIdQuery,
 } from '../../generated/graphql';
-import { GameList } from '../../components/lobby/GameList';
+import { RoomList } from '../../components/lobby/RoomList';
 import { Button } from '../../components/shared/Button';
 
 const Root = styled.div`
@@ -23,7 +23,7 @@ const Root = styled.div`
   background-image: url(${PUZZLE_IMAGE});
 `;
 
-const GameListWrapper = styled.div`
+const RoomListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #ccbfaa;
@@ -47,63 +47,63 @@ const CustomButton = styled(Button)`
 
 export const Lobby: React.FC = () => {
   const history = useHistory();
-  const [createGame] = useCreateGameMutation();
-  const [joinGame] = useJoinGameMutation();
-  const { data: gamesData, refetch: loadGames } = useGamesQuery({
+  const [createRoom] = useCreateRoomMutation();
+  const [joinRoom] = useJoinRoomMutation();
+  const { data: roomsData, refetch: loadRooms } = useRoomsQuery({
     fetchPolicy: 'network-only',
   });
-  const games = gamesData && gamesData.games;
+  const rooms = roomsData && roomsData.rooms;
 
-  const { data: currentGameIdData } = useCurrentGameIdQuery({
+  const { data: currentRoomIdData } = useCurrentRoomIdQuery({
     fetchPolicy: 'network-only',
   });
-  const currentGameId = currentGameIdData && currentGameIdData.currentGame!.id;
+  const currentRoomId = currentRoomIdData && currentRoomIdData.currentRoom?.id;
 
-  const handleCreateGame = async () => {
-    const game = await createGame().catch((error) => {
-      console.error('game not created', error);
+  const handleCreateRoom = async () => {
+    const room = await createRoom().catch((error) => {
+      console.error('room not created', error);
     });
 
-    if (game) {
-      history.push(Pages.GAME);
+    if (room) {
+      history.push(Pages.ROOM);
     }
   };
 
   const handleRefreshList = () => {
-    loadGames();
+    loadRooms();
   };
 
-  const handleJoinGame = async (gameId: string) => {
-    const game = await joinGame({
+  const handleJoinRoom = async (roomId: string) => {
+    const room = await joinRoom({
       variables: {
-        gameId,
+        roomId,
       },
     }).catch((error) => {
-      console.error("can't join game", error);
+      console.error("can't join room", error);
     });
 
-    if (game) {
-      history.push(Pages.GAME);
+    if (room) {
+      history.push(Pages.ROOM);
     }
   };
 
   return (
     <Root>
       <Header />
-      <GameListWrapper>
+      <RoomListWrapper>
         <ControlPanel>
-          <CustomButton onClick={handleCreateGame}>
-            Create New Game
+          <CustomButton onClick={handleCreateRoom}>
+            Create New Room
           </CustomButton>
           <CustomButton onClick={handleRefreshList}>Refresh List</CustomButton>
         </ControlPanel>
 
-        <GameList
-          games={games}
-          onJoinGame={handleJoinGame}
-          currentGameId={currentGameId}
+        <RoomList
+          rooms={rooms}
+          onJoinRoom={handleJoinRoom}
+          currentRoomId={currentRoomId}
         />
-      </GameListWrapper>
+      </RoomListWrapper>
     </Root>
   );
 };

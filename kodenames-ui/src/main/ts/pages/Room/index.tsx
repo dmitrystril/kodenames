@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import { Table } from '../../components/game/Table';
-import { Log } from '../../components/game/Log';
-import { Chat } from '../../components/game/Chat';
+import { Table } from '../../components/room/Table';
+import { Log } from '../../components/room/Log';
+import { Chat } from '../../components/room/Chat';
 import Header from '../../components/shared/Header';
 import { Button } from '../../components/shared/Button';
-import { useCurrentGameQuery } from '../../generated/graphql';
+import { useCurrentRoomQuery } from '../../generated/graphql';
 import { Pages } from '../../constants/Pages';
 
 const Root = styled.div`
@@ -16,7 +16,7 @@ const Root = styled.div`
   height: 100%;
 `;
 
-const GameLayout = styled.div`
+const RoomLayout = styled.div`
   display: flex;
   height: 100%;
   background-color: #4c473f;
@@ -36,12 +36,12 @@ const ColumnTwo = styled.div`
   flex-basis: 30%;
 `;
 
-export const Game: React.FC = () => {
+export const Room: React.FC = () => {
   const history = useHistory();
-  const { data } = useCurrentGameQuery();
-  const currentGame = data && data.currentGame;
+  const { data } = useCurrentRoomQuery();
+  const currentRoom = data && data.currentRoom;
 
-  console.log('data: ', currentGame);
+  console.log('data: ', currentRoom);
 
   const handleNavigateToLobby = async () => {
     history.push(Pages.LOBBY);
@@ -55,7 +55,7 @@ export const Game: React.FC = () => {
         </Button>
       </Header>
 
-      <GameLayout>
+      <RoomLayout>
         <ColumnOne>
           <Table />
           <Log />
@@ -64,7 +64,7 @@ export const Game: React.FC = () => {
         <ColumnTwo>
           <Chat />
         </ColumnTwo>
-      </GameLayout>
+      </RoomLayout>
     </Root>
   );
 };

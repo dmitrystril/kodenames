@@ -14,8 +14,8 @@ export type Scalars = {
 export type Query = {
    __typename?: 'Query';
   currentUser?: Maybe<User>;
-  games: Array<Game>;
-  currentGame?: Maybe<Game>;
+  rooms: Array<Room>;
+  currentRoom?: Maybe<Room>;
 };
 
 export type User = {
@@ -23,11 +23,11 @@ export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
   userName: Scalars['String'];
-  game: Game;
+  room: Room;
 };
 
-export type Game = {
-   __typename?: 'Game';
+export type Room = {
+   __typename?: 'Room';
   id: Scalars['ID'];
   no: Scalars['Int'];
   users: Array<User>;
@@ -39,9 +39,9 @@ export type Mutation = {
   login: LoginResponse;
   revokeRefreshTokensForUser: Scalars['Boolean'];
   logout: Scalars['Boolean'];
-  createGame: Game;
-  joinGame: Game;
-  quitGame: Scalars['Boolean'];
+  createRoom: Room;
+  joinRoom: Room;
+  quitRoom: Scalars['Boolean'];
 };
 
 
@@ -61,13 +61,13 @@ export type MutationRevokeRefreshTokensForUserArgs = {
 };
 
 
-export type MutationJoinGameArgs = {
-  gameId: Scalars['String'];
+export type MutationJoinRoomArgs = {
+  roomId: Scalars['String'];
 };
 
 
-export type MutationQuitGameArgs = {
-  gameId: Scalars['String'];
+export type MutationQuitRoomArgs = {
+  roomId: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -82,25 +82,25 @@ export type LoginResponse = {
   user: User;
 };
 
-export type CreateGameMutationVariables = {};
+export type CreateRoomMutationVariables = {};
 
 
-export type CreateGameMutation = (
+export type CreateRoomMutation = (
   { __typename?: 'Mutation' }
-  & { createGame: (
-    { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+  & { createRoom: (
+    { __typename?: 'Room' }
+    & Pick<Room, 'id'>
   ) }
 );
 
-export type CurrentGameQueryVariables = {};
+export type CurrentRoomQueryVariables = {};
 
 
-export type CurrentGameQuery = (
+export type CurrentRoomQuery = (
   { __typename?: 'Query' }
-  & { currentGame?: Maybe<(
-    { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+  & { currentRoom?: Maybe<(
+    { __typename?: 'Room' }
+    & Pick<Room, 'id'>
     & { users: Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'email' | 'userName'>
@@ -108,14 +108,14 @@ export type CurrentGameQuery = (
   )> }
 );
 
-export type CurrentGameIdQueryVariables = {};
+export type CurrentRoomIdQueryVariables = {};
 
 
-export type CurrentGameIdQuery = (
+export type CurrentRoomIdQuery = (
   { __typename?: 'Query' }
-  & { currentGame?: Maybe<(
-    { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+  & { currentRoom?: Maybe<(
+    { __typename?: 'Room' }
+    & Pick<Room, 'id'>
   )> }
 );
 
@@ -130,31 +130,16 @@ export type CurrentUserQuery = (
   )> }
 );
 
-export type GamesQueryVariables = {};
-
-
-export type GamesQuery = (
-  { __typename?: 'Query' }
-  & { games: Array<(
-    { __typename?: 'Game' }
-    & Pick<Game, 'id' | 'no'>
-    & { users: Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'userName' | 'email'>
-    )> }
-  )> }
-);
-
-export type JoinGameMutationVariables = {
-  gameId: Scalars['String'];
+export type JoinRoomMutationVariables = {
+  roomId: Scalars['String'];
 };
 
 
-export type JoinGameMutation = (
+export type JoinRoomMutation = (
   { __typename?: 'Mutation' }
-  & { joinGame: (
-    { __typename?: 'Game' }
-    & Pick<Game, 'id'>
+  & { joinRoom: (
+    { __typename?: 'Room' }
+    & Pick<Room, 'id'>
   ) }
 );
 
@@ -184,14 +169,14 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
-export type QuitGameMutationVariables = {
-  gameId: Scalars['String'];
+export type QuitRoomMutationVariables = {
+  roomId: Scalars['String'];
 };
 
 
-export type QuitGameMutation = (
+export type QuitRoomMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'quitGame'>
+  & Pick<Mutation, 'quitRoom'>
 );
 
 export type RegisterMutationVariables = {
@@ -204,41 +189,56 @@ export type RegisterMutation = (
   & Pick<Mutation, 'register'>
 );
 
+export type RoomsQueryVariables = {};
 
-export const CreateGameDocument = gql`
-    mutation createGame {
-  createGame {
+
+export type RoomsQuery = (
+  { __typename?: 'Query' }
+  & { rooms: Array<(
+    { __typename?: 'Room' }
+    & Pick<Room, 'id' | 'no'>
+    & { users: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'userName' | 'email'>
+    )> }
+  )> }
+);
+
+
+export const CreateRoomDocument = gql`
+    mutation createRoom {
+  createRoom {
     id
   }
 }
     `;
-export type CreateGameMutationFn = ApolloReactCommon.MutationFunction<CreateGameMutation, CreateGameMutationVariables>;
+export type CreateRoomMutationFn = ApolloReactCommon.MutationFunction<CreateRoomMutation, CreateRoomMutationVariables>;
 
 /**
- * __useCreateGameMutation__
+ * __useCreateRoomMutation__
  *
- * To run a mutation, you first call `useCreateGameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateGameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRoomMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createGameMutation, { data, loading, error }] = useCreateGameMutation({
+ * const [createRoomMutation, { data, loading, error }] = useCreateRoomMutation({
  *   variables: {
  *   },
  * });
  */
-export function useCreateGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateGameMutation, CreateGameMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateGameMutation, CreateGameMutationVariables>(CreateGameDocument, baseOptions);
+export function useCreateRoomMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRoomMutation, CreateRoomMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateRoomMutation, CreateRoomMutationVariables>(CreateRoomDocument, baseOptions);
       }
-export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
-export type CreateGameMutationResult = ApolloReactCommon.MutationResult<CreateGameMutation>;
-export type CreateGameMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
-export const CurrentGameDocument = gql`
-    query currentGame {
-  currentGame {
+export type CreateRoomMutationHookResult = ReturnType<typeof useCreateRoomMutation>;
+export type CreateRoomMutationResult = ApolloReactCommon.MutationResult<CreateRoomMutation>;
+export type CreateRoomMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRoomMutation, CreateRoomMutationVariables>;
+export const CurrentRoomDocument = gql`
+    query currentRoom {
+  currentRoom {
     id
     users {
       id
@@ -250,61 +250,61 @@ export const CurrentGameDocument = gql`
     `;
 
 /**
- * __useCurrentGameQuery__
+ * __useCurrentRoomQuery__
  *
- * To run a query within a React component, call `useCurrentGameQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentGameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCurrentRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCurrentGameQuery({
+ * const { data, loading, error } = useCurrentRoomQuery({
  *   variables: {
  *   },
  * });
  */
-export function useCurrentGameQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentGameQuery, CurrentGameQueryVariables>) {
-        return ApolloReactHooks.useQuery<CurrentGameQuery, CurrentGameQueryVariables>(CurrentGameDocument, baseOptions);
+export function useCurrentRoomQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentRoomQuery, CurrentRoomQueryVariables>) {
+        return ApolloReactHooks.useQuery<CurrentRoomQuery, CurrentRoomQueryVariables>(CurrentRoomDocument, baseOptions);
       }
-export function useCurrentGameLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentGameQuery, CurrentGameQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CurrentGameQuery, CurrentGameQueryVariables>(CurrentGameDocument, baseOptions);
+export function useCurrentRoomLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentRoomQuery, CurrentRoomQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CurrentRoomQuery, CurrentRoomQueryVariables>(CurrentRoomDocument, baseOptions);
         }
-export type CurrentGameQueryHookResult = ReturnType<typeof useCurrentGameQuery>;
-export type CurrentGameLazyQueryHookResult = ReturnType<typeof useCurrentGameLazyQuery>;
-export type CurrentGameQueryResult = ApolloReactCommon.QueryResult<CurrentGameQuery, CurrentGameQueryVariables>;
-export const CurrentGameIdDocument = gql`
-    query currentGameId {
-  currentGame {
+export type CurrentRoomQueryHookResult = ReturnType<typeof useCurrentRoomQuery>;
+export type CurrentRoomLazyQueryHookResult = ReturnType<typeof useCurrentRoomLazyQuery>;
+export type CurrentRoomQueryResult = ApolloReactCommon.QueryResult<CurrentRoomQuery, CurrentRoomQueryVariables>;
+export const CurrentRoomIdDocument = gql`
+    query currentRoomId {
+  currentRoom {
     id
   }
 }
     `;
 
 /**
- * __useCurrentGameIdQuery__
+ * __useCurrentRoomIdQuery__
  *
- * To run a query within a React component, call `useCurrentGameIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentGameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCurrentRoomIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentRoomIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCurrentGameIdQuery({
+ * const { data, loading, error } = useCurrentRoomIdQuery({
  *   variables: {
  *   },
  * });
  */
-export function useCurrentGameIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentGameIdQuery, CurrentGameIdQueryVariables>) {
-        return ApolloReactHooks.useQuery<CurrentGameIdQuery, CurrentGameIdQueryVariables>(CurrentGameIdDocument, baseOptions);
+export function useCurrentRoomIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>) {
+        return ApolloReactHooks.useQuery<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>(CurrentRoomIdDocument, baseOptions);
       }
-export function useCurrentGameIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentGameIdQuery, CurrentGameIdQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CurrentGameIdQuery, CurrentGameIdQueryVariables>(CurrentGameIdDocument, baseOptions);
+export function useCurrentRoomIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>(CurrentRoomIdDocument, baseOptions);
         }
-export type CurrentGameIdQueryHookResult = ReturnType<typeof useCurrentGameIdQuery>;
-export type CurrentGameIdLazyQueryHookResult = ReturnType<typeof useCurrentGameIdLazyQuery>;
-export type CurrentGameIdQueryResult = ApolloReactCommon.QueryResult<CurrentGameIdQuery, CurrentGameIdQueryVariables>;
+export type CurrentRoomIdQueryHookResult = ReturnType<typeof useCurrentRoomIdQuery>;
+export type CurrentRoomIdLazyQueryHookResult = ReturnType<typeof useCurrentRoomIdLazyQuery>;
+export type CurrentRoomIdQueryResult = ApolloReactCommon.QueryResult<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>;
 export const CurrentUserDocument = gql`
     query currentUser {
   currentUser {
@@ -339,76 +339,38 @@ export function useCurrentUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = ApolloReactCommon.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
-export const GamesDocument = gql`
-    query Games {
-  games {
-    id
-    no
-    users {
-      id
-      userName
-      email
-    }
-  }
-}
-    `;
-
-/**
- * __useGamesQuery__
- *
- * To run a query within a React component, call `useGamesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGamesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGamesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GamesQuery, GamesQueryVariables>) {
-        return ApolloReactHooks.useQuery<GamesQuery, GamesQueryVariables>(GamesDocument, baseOptions);
-      }
-export function useGamesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GamesQuery, GamesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GamesQuery, GamesQueryVariables>(GamesDocument, baseOptions);
-        }
-export type GamesQueryHookResult = ReturnType<typeof useGamesQuery>;
-export type GamesLazyQueryHookResult = ReturnType<typeof useGamesLazyQuery>;
-export type GamesQueryResult = ApolloReactCommon.QueryResult<GamesQuery, GamesQueryVariables>;
-export const JoinGameDocument = gql`
-    mutation joinGame($gameId: String!) {
-  joinGame(gameId: $gameId) {
+export const JoinRoomDocument = gql`
+    mutation joinRoom($roomId: String!) {
+  joinRoom(roomId: $roomId) {
     id
   }
 }
     `;
-export type JoinGameMutationFn = ApolloReactCommon.MutationFunction<JoinGameMutation, JoinGameMutationVariables>;
+export type JoinRoomMutationFn = ApolloReactCommon.MutationFunction<JoinRoomMutation, JoinRoomMutationVariables>;
 
 /**
- * __useJoinGameMutation__
+ * __useJoinRoomMutation__
  *
- * To run a mutation, you first call `useJoinGameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinGameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useJoinRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinRoomMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [joinGameMutation, { data, loading, error }] = useJoinGameMutation({
+ * const [joinRoomMutation, { data, loading, error }] = useJoinRoomMutation({
  *   variables: {
- *      gameId: // value for 'gameId'
+ *      roomId: // value for 'roomId'
  *   },
  * });
  */
-export function useJoinGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<JoinGameMutation, JoinGameMutationVariables>) {
-        return ApolloReactHooks.useMutation<JoinGameMutation, JoinGameMutationVariables>(JoinGameDocument, baseOptions);
+export function useJoinRoomMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<JoinRoomMutation, JoinRoomMutationVariables>) {
+        return ApolloReactHooks.useMutation<JoinRoomMutation, JoinRoomMutationVariables>(JoinRoomDocument, baseOptions);
       }
-export type JoinGameMutationHookResult = ReturnType<typeof useJoinGameMutation>;
-export type JoinGameMutationResult = ApolloReactCommon.MutationResult<JoinGameMutation>;
-export type JoinGameMutationOptions = ApolloReactCommon.BaseMutationOptions<JoinGameMutation, JoinGameMutationVariables>;
+export type JoinRoomMutationHookResult = ReturnType<typeof useJoinRoomMutation>;
+export type JoinRoomMutationResult = ApolloReactCommon.MutationResult<JoinRoomMutation>;
+export type JoinRoomMutationOptions = ApolloReactCommon.BaseMutationOptions<JoinRoomMutation, JoinRoomMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -476,36 +438,36 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
-export const QuitGameDocument = gql`
-    mutation quitGame($gameId: String!) {
-  quitGame(gameId: $gameId)
+export const QuitRoomDocument = gql`
+    mutation quitRoom($roomId: String!) {
+  quitRoom(roomId: $roomId)
 }
     `;
-export type QuitGameMutationFn = ApolloReactCommon.MutationFunction<QuitGameMutation, QuitGameMutationVariables>;
+export type QuitRoomMutationFn = ApolloReactCommon.MutationFunction<QuitRoomMutation, QuitRoomMutationVariables>;
 
 /**
- * __useQuitGameMutation__
+ * __useQuitRoomMutation__
  *
- * To run a mutation, you first call `useQuitGameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useQuitGameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useQuitRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useQuitRoomMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [quitGameMutation, { data, loading, error }] = useQuitGameMutation({
+ * const [quitRoomMutation, { data, loading, error }] = useQuitRoomMutation({
  *   variables: {
- *      gameId: // value for 'gameId'
+ *      roomId: // value for 'roomId'
  *   },
  * });
  */
-export function useQuitGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<QuitGameMutation, QuitGameMutationVariables>) {
-        return ApolloReactHooks.useMutation<QuitGameMutation, QuitGameMutationVariables>(QuitGameDocument, baseOptions);
+export function useQuitRoomMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<QuitRoomMutation, QuitRoomMutationVariables>) {
+        return ApolloReactHooks.useMutation<QuitRoomMutation, QuitRoomMutationVariables>(QuitRoomDocument, baseOptions);
       }
-export type QuitGameMutationHookResult = ReturnType<typeof useQuitGameMutation>;
-export type QuitGameMutationResult = ApolloReactCommon.MutationResult<QuitGameMutation>;
-export type QuitGameMutationOptions = ApolloReactCommon.BaseMutationOptions<QuitGameMutation, QuitGameMutationVariables>;
+export type QuitRoomMutationHookResult = ReturnType<typeof useQuitRoomMutation>;
+export type QuitRoomMutationResult = ApolloReactCommon.MutationResult<QuitRoomMutation>;
+export type QuitRoomMutationOptions = ApolloReactCommon.BaseMutationOptions<QuitRoomMutation, QuitRoomMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($input: RegisterInput!) {
   register(input: $input)
@@ -536,3 +498,41 @@ export function useRegisterMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RoomsDocument = gql`
+    query Rooms {
+  rooms {
+    id
+    no
+    users {
+      id
+      userName
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useRoomsQuery__
+ *
+ * To run a query within a React component, call `useRoomsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoomsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoomsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRoomsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<RoomsQuery, RoomsQueryVariables>) {
+        return ApolloReactHooks.useQuery<RoomsQuery, RoomsQueryVariables>(RoomsDocument, baseOptions);
+      }
+export function useRoomsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<RoomsQuery, RoomsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<RoomsQuery, RoomsQueryVariables>(RoomsDocument, baseOptions);
+        }
+export type RoomsQueryHookResult = ReturnType<typeof useRoomsQuery>;
+export type RoomsLazyQueryHookResult = ReturnType<typeof useRoomsLazyQuery>;
+export type RoomsQueryResult = ApolloReactCommon.QueryResult<RoomsQuery, RoomsQueryVariables>;
