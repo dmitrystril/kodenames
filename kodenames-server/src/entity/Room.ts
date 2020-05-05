@@ -11,8 +11,8 @@ import { ObjectType, Field, ID, Int } from 'type-graphql';
 import { User } from './User';
 
 @ObjectType()
-@Entity('games')
-export class Game extends BaseEntity {
+@Entity('rooms')
+export class Room extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -22,7 +22,7 @@ export class Game extends BaseEntity {
   @Generated('increment')
   readonly no: number;
 
-  @OneToMany(() => User, (user) => user.game, { cascade: true, eager: true })
+  @OneToMany(() => User, (user) => user.room, { cascade: true, eager: true })
   @Field(() => [User])
   users: User[];
 }

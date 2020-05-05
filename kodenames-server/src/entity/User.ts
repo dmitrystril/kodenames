@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 
-import { Game } from './Game';
+import { Room } from './Room';
 
 @ObjectType()
 @Entity('users')
@@ -24,9 +24,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   userName?: string;
 
-  @ManyToOne(() => Game, (game) => game.users)
-  @Field(() => Game)
-  game: Game;
+  @ManyToOne(() => Room, (room) => room.users)
+  @Field(() => Room)
+  room: Room;
 
   @Column()
   password: string;

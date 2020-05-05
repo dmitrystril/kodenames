@@ -1,85 +1,85 @@
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from 'type-graphql';
 
-import { Game } from '../entity/Game';
+import { Room } from '../entity/Room';
 import { User } from '../entity/User';
 import MyContext from '../MyContext';
 
 // const NOTIFICATION_SUB = 'NOTIFICATION_SUB';
 
 @Resolver()
-export class GameResolver {
-  @Query(() => [Game])
+export class RoomResolver {
+  @Query(() => [Room])
   @Authorized()
-  games() {
-    return Game.find({
+  rooms() {
+    return Room.find({
       order: {
         no: 'DESC',
       },
     });
   }
 
-  @Mutation(() => Game)
+  @Mutation(() => Room)
   @Authorized()
-  async createGame(@Ctx() context: MyContext) {
+  async createRoom(@Ctx() context: MyContext) {
     try {
       const user = await User.findOne({
         where: { id: context.payload!.userId },
       });
-      const game = await Game.create({ users: [user!] }).save();
-      return game;
+      const room = await Room.create({ users: [user!] }).save();
+      return room;
     } catch (error) {
-      throw new Error("can't create game" + error);
+      throw new Error("can't create room" + error);
     }
   }
 
-  @Mutation(() => Game)
+  @Mutation(() => Room)
   @Authorized()
-  async joinGame(@Ctx() context: MyContext, @Arg('gameId') gameId: string) {
+  async joinRoom(@Ctx() context: MyContext, @Arg('roomId') roomId: string) {
     try {
       const user = await User.findOne({
         where: { id: context.payload!.userId },
       });
-      let game = await Game.findOne({ where: { id: gameId } });
+      let room = await Room.findOne({ where: { id: roomId } });
 
-      // TODO: check whether game already contains user on 'join game'
-      game!.users.push(user!);
-      game = await game!.save();
-      return game;
+      // TODO: check whether room already contains user on 'join room'
+      room!.users.push(user!);
+      room = await room!.save();
+      return room;
     } catch (error) {
-      throw new Error("can't join game" + error);
+      throw new Error("can't join room" + error);
     }
   }
 
   @Mutation(() => Boolean)
   @Authorized()
-  async quitGame(@Ctx() context: MyContext, @Arg('gameId') gameId: string) {
+  async quitRoom(@Ctx() context: MyContext, @Arg('roomId') roomId: string) {
     const userId = context.payload?.userId;
     try {
-      let game = await Game.findOne({ where: { id: gameId } });
+      let room = await Room.findOne({ where: { id: roomId } });
 
-      game!.users = game!.users.filter((user) => {
+      room!.users = room!.users.filter((user) => {
         return user.id != userId;
       });
 
-      await game!.save();
+      await room!.save();
       return true;
     } catch (error) {
-      throw new Error("can't quit game" + error);
+      throw new Error("can't quit room" + error);
     }
   }
 
-  @Query(() => Game, { nullable: true })
+  @Query(() => Room, { nullable: true })
   @Authorized()
-  async currentGame(@Ctx() context: MyContext) {
+  async currentRoom(@Ctx() context: MyContext) {
     try {
       const user = await User.findOne({
         where: { id: context.payload!.userId },
-        relations: ['game'],
+        relations: ['room'],
       });
 
-      return user!.game;
+      return user!.room;
     } catch (error) {
-      throw new Error("can't get current game" + error);
+      throw new Error("can't get current room" + error);
     }
   }
 

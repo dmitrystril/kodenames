@@ -1,4 +1,4 @@
 import { UserResolver } from "./UserResolver";
-import { GameResolver } from "./GameResolver";
+import { RoomResolver } from "./RoomResolver";
 
-export const resolvers = [UserResolver, GameResolver];
+export const resolvers = [UserResolver, RoomResolver];
