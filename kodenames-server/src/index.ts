@@ -1,25 +1,27 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { verify } from 'jsonwebtoken';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
-import cookieParser from 'cookie-parser';
-import { verify } from 'jsonwebtoken';
-import cors from 'cors';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { execute, subscribe } from 'graphql';
 
-import { UserResolver } from './resolver/UserResolver';
 import { User } from './entity/User';
 import { createAccessToken, createRefreshToken } from './auth';
 import { sendRefreshToken, sendRefreshTokenReject } from './sendRefreshToken';
-import { GameResolver } from './resolver/GameResolver';
 import { authChecker } from './authChecker';
+import { resolvers } from './resolver';
 
 (async () => {
   const app = express();
   app.use(
     cors({
-      origin: 'http://localhost:3000',
+      origin: process.env.ORIGIN_URI,
       credentials: true,
     }),
   );
@@ -55,21 +57,25 @@ import { authChecker } from './authChecker';
 
   await createConnection();
 
-  const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [UserResolver, GameResolver],
-      authChecker,
-    }),
-    context: ({ req, res }) => ({ req, res }),
-    formatError: (err) => {
-      // TODO: do some error formatting here
-      return err;
-    },
+  const schema = await buildSchema({
+    resolvers,
+    authChecker,
   });
 
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ req, res }) => ({ req, res }),
+  });
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(4000, () => {
-    console.log('express server started');
+  const port = process.env.SERVER_PORT || 4000;
+
+  const server = http.createServer(app);
+  server.listen(port, () => {
+    console.log(
+      `Server started at http://localhost:${port}${apolloServer.graphqlPath}`,
+    );
   });
+
+  SubscriptionServer.create({ schema, execute, subscribe }, { server });
 })();

@@ -1,0 +1,14 @@
+gameState = {
+  cards: [
+    {
+      id,
+      type: Red | Blue | White | Black,
+      isActive,
+    },
+    ...
+  ],
+  score,
+  users,
+  userTeam: Enum?,
+  whoseMove,
+}
