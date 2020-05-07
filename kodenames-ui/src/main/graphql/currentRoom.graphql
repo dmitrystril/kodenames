@@ -1,10 +1,19 @@
 query currentRoom {
   currentRoom {
     id
-    users {
+    no
+    game {
       id
-      email
-      userName
+      cards {
+        id
+        type
+        isActive
+      }
+      players {
+        id
+        team
+      }
+      dateCreated
     }
   }
 }

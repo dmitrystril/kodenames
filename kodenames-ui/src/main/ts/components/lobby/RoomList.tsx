@@ -53,15 +53,10 @@ const UserName = styled.div`
 
 interface RoomListProps {
   rooms: any;
-  currentRoomId?: string;
   onJoinRoom: Function;
 }
 
-export const RoomList: React.FC<RoomListProps> = ({
-  rooms,
-  currentRoomId,
-  onJoinRoom,
-}) => {
+export const RoomList: React.FC<RoomListProps> = ({ rooms, onJoinRoom }) => {
   return (
     <Root>
       {rooms &&
@@ -80,7 +75,7 @@ export const RoomList: React.FC<RoomListProps> = ({
 
             <ButtonCell>
               <CustomButton onClick={() => onJoinRoom(room.id)}>
-                {currentRoomId !== room.id ? 'Join Room' : 'Back to Room'}
+                Join Room
               </CustomButton>
             </ButtonCell>
           </RoomListRow>

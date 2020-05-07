@@ -3,10 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
+  OneToOne,
+  JoinColumn,
   ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 
+import { Player } from './Player';
 import { Room } from './Room';
 
 @ObjectType()
@@ -21,11 +24,19 @@ export class User extends BaseEntity {
   email: string;
 
   @Field()
-  @Column({ nullable: true })
-  userName?: string;
+  @Column()
+  userName: string;
 
-  @ManyToOne(() => Room, (room) => room.users)
+  @Field(() => Player)
+  @OneToOne(() => Player, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  player: Player;
+
   @Field(() => Room)
+  @ManyToOne(() => Room, (room) => room.users)
   room: Room;
 
   @Column()

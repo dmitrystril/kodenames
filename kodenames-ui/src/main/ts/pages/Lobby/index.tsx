@@ -9,7 +9,6 @@ import {
   useCreateRoomMutation,
   useRoomsQuery,
   useJoinRoomMutation,
-  useCurrentRoomIdQuery,
 } from '../../generated/graphql';
 import { RoomList } from '../../components/lobby/RoomList';
 import { Button } from '../../components/shared/Button';
@@ -54,11 +53,6 @@ export const Lobby: React.FC = () => {
   });
   const rooms = roomsData && roomsData.rooms;
 
-  const { data: currentRoomIdData } = useCurrentRoomIdQuery({
-    fetchPolicy: 'network-only',
-  });
-  const currentRoomId = currentRoomIdData && currentRoomIdData.currentRoom?.id;
-
   const handleCreateRoom = async () => {
     const room = await createRoom().catch((error) => {
       console.error('room not created', error);
@@ -98,11 +92,7 @@ export const Lobby: React.FC = () => {
           <CustomButton onClick={handleRefreshList}>Refresh List</CustomButton>
         </ControlPanel>
 
-        <RoomList
-          rooms={rooms}
-          onJoinRoom={handleJoinRoom}
-          currentRoomId={currentRoomId}
-        />
+        <RoomList rooms={rooms} onJoinRoom={handleJoinRoom} />
       </RoomListWrapper>
     </Root>
   );

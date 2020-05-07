@@ -106,6 +106,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
           <TextInput
             name="userName"
             type="text"
+            required
             onChange={(e) => setUserName(e.target.value)}
           />
         </InputGroup>

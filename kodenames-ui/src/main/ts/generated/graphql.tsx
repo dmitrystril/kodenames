@@ -9,6 +9,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type Query = {
@@ -16,6 +18,7 @@ export type Query = {
   currentUser?: Maybe<User>;
   rooms: Array<Room>;
   currentRoom?: Maybe<Room>;
+  toBeDeleted: Scalars['String'];
 };
 
 export type User = {
@@ -23,14 +26,52 @@ export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
   userName: Scalars['String'];
+  player: Player;
   room: Room;
 };
+
+export type Player = {
+   __typename?: 'Player';
+  id: Scalars['ID'];
+  game: Game;
+  team?: Maybe<TeamType>;
+};
+
+export type Game = {
+   __typename?: 'Game';
+  id: Scalars['ID'];
+  cards: Array<Card>;
+  players: Array<Player>;
+  dateCreated: Scalars['DateTime'];
+};
+
+export type Card = {
+   __typename?: 'Card';
+  id: Scalars['ID'];
+  type: CardType;
+  game: Game;
+  isActive: Scalars['Boolean'];
+};
+
+export enum CardType {
+  Red = 'RED',
+  Blue = 'BLUE',
+  White = 'WHITE',
+  Black = 'BLACK'
+}
+
+
+export enum TeamType {
+  Red = 'RED',
+  Blue = 'BLUE'
+}
 
 export type Room = {
    __typename?: 'Room';
   id: Scalars['ID'];
   no: Scalars['Int'];
   users: Array<User>;
+  game: Game;
 };
 
 export type Mutation = {
@@ -42,6 +83,7 @@ export type Mutation = {
   createRoom: Room;
   joinRoom: Room;
   quitRoom: Scalars['Boolean'];
+  createGame: Game;
 };
 
 
@@ -100,22 +142,18 @@ export type CurrentRoomQuery = (
   { __typename?: 'Query' }
   & { currentRoom?: Maybe<(
     { __typename?: 'Room' }
-    & Pick<Room, 'id'>
-    & { users: Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'userName'>
-    )> }
-  )> }
-);
-
-export type CurrentRoomIdQueryVariables = {};
-
-
-export type CurrentRoomIdQuery = (
-  { __typename?: 'Query' }
-  & { currentRoom?: Maybe<(
-    { __typename?: 'Room' }
-    & Pick<Room, 'id'>
+    & Pick<Room, 'id' | 'no'>
+    & { game: (
+      { __typename?: 'Game' }
+      & Pick<Game, 'id' | 'dateCreated'>
+      & { cards: Array<(
+        { __typename?: 'Card' }
+        & Pick<Card, 'id' | 'type' | 'isActive'>
+      )>, players: Array<(
+        { __typename?: 'Player' }
+        & Pick<Player, 'id' | 'team'>
+      )> }
+    ) }
   )> }
 );
 
@@ -200,6 +238,10 @@ export type RoomsQuery = (
     & { users: Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'userName' | 'email'>
+      & { player: (
+        { __typename?: 'Player' }
+        & Pick<Player, 'id'>
+      ) }
     )> }
   )> }
 );
@@ -240,10 +282,19 @@ export const CurrentRoomDocument = gql`
     query currentRoom {
   currentRoom {
     id
-    users {
+    no
+    game {
       id
-      email
-      userName
+      cards {
+        id
+        type
+        isActive
+      }
+      players {
+        id
+        team
+      }
+      dateCreated
     }
   }
 }
@@ -273,38 +324,6 @@ export function useCurrentRoomLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type CurrentRoomQueryHookResult = ReturnType<typeof useCurrentRoomQuery>;
 export type CurrentRoomLazyQueryHookResult = ReturnType<typeof useCurrentRoomLazyQuery>;
 export type CurrentRoomQueryResult = ApolloReactCommon.QueryResult<CurrentRoomQuery, CurrentRoomQueryVariables>;
-export const CurrentRoomIdDocument = gql`
-    query currentRoomId {
-  currentRoom {
-    id
-  }
-}
-    `;
-
-/**
- * __useCurrentRoomIdQuery__
- *
- * To run a query within a React component, call `useCurrentRoomIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentRoomIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCurrentRoomIdQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCurrentRoomIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>) {
-        return ApolloReactHooks.useQuery<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>(CurrentRoomIdDocument, baseOptions);
-      }
-export function useCurrentRoomIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>(CurrentRoomIdDocument, baseOptions);
-        }
-export type CurrentRoomIdQueryHookResult = ReturnType<typeof useCurrentRoomIdQuery>;
-export type CurrentRoomIdLazyQueryHookResult = ReturnType<typeof useCurrentRoomIdLazyQuery>;
-export type CurrentRoomIdQueryResult = ApolloReactCommon.QueryResult<CurrentRoomIdQuery, CurrentRoomIdQueryVariables>;
 export const CurrentUserDocument = gql`
     query currentUser {
   currentUser {
@@ -507,6 +526,9 @@ export const RoomsDocument = gql`
       id
       userName
       email
+      player {
+        id
+      }
     }
   }
 }

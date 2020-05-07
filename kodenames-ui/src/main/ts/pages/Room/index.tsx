@@ -7,8 +7,11 @@ import { Log } from '../../components/room/Log';
 import { Chat } from '../../components/room/Chat';
 import Header from '../../components/shared/Header';
 import { Button } from '../../components/shared/Button';
-import { useCurrentRoomQuery } from '../../generated/graphql';
 import { Pages } from '../../constants/Pages';
+import {
+  useCurrentRoomQuery,
+  useQuitRoomMutation,
+} from '../../generated/graphql';
 
 const Root = styled.div`
   display: flex;
@@ -38,21 +41,24 @@ const ColumnTwo = styled.div`
 
 export const Room: React.FC = () => {
   const history = useHistory();
-  const { data } = useCurrentRoomQuery();
-  const currentRoom = data && data.currentRoom;
+  const { data: currentRoomData } = useCurrentRoomQuery({
+    fetchPolicy: 'network-only',
+  });
+  const [quitRoom] = useQuitRoomMutation();
 
-  console.log('data: ', currentRoom);
-
-  const handleNavigateToLobby = async () => {
+  const handleQuitRoom = async () => {
+    await quitRoom({
+      variables: {
+        roomId: currentRoomData!.currentRoom!.id,
+      },
+    });
     history.push(Pages.LOBBY);
   };
 
   return (
     <Root>
       <Header>
-        <Button onClick={() => handleNavigateToLobby()}>
-          &#x21A9; Back to Lobby
-        </Button>
+        <Button onClick={() => handleQuitRoom()}>&#x21A9; Quit Room</Button>
       </Header>
 
       <RoomLayout>

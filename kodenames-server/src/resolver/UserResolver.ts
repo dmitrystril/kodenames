@@ -1,15 +1,9 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Arg,
-  Ctx,
-  Authorized,
-} from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from 'type-graphql';
 import { hash, verify } from 'argon2';
 import { getConnection } from 'typeorm';
 
 import { User } from '../entity/User';
+import { Player } from '../entity/Player';
 import MyContext from '../MyContext';
 import { createAccessToken, createRefreshToken } from '../auth';
 import { sendRefreshToken } from '../sendRefreshToken';
@@ -41,11 +35,14 @@ export class UserResolver {
     const hashedPassword = await hash(password);
 
     try {
-      await User.insert({
+      const player = await Player.create().save();
+
+      await User.create({
         email,
         password: hashedPassword,
         userName,
-      });
+        player,
+      }).save();
     } catch (error) {
       console.error(error);
       return false;

@@ -6,6 +6,9 @@ query Rooms {
       id
       userName
       email
+      player {
+        id
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from 'type-graphql';
 import { Room } from '../entity/Room';
 import { User } from '../entity/User';
 import MyContext from '../MyContext';
+import { GameService } from '../service/GameService';
 
 // const NOTIFICATION_SUB = 'NOTIFICATION_SUB';
 
@@ -21,11 +22,16 @@ export class RoomResolver {
   @Mutation(() => Room)
   @Authorized()
   async createRoom(@Ctx() context: MyContext) {
+    const gameService = new GameService();
+
     try {
       const user = await User.findOne({
         where: { id: context.payload!.userId },
       });
-      const room = await Room.create({ users: [user!] }).save();
+
+      const game = await gameService.createGame(user!.id);
+
+      const room = await Room.create({ users: [user!], game }).save();
       return room;
     } catch (error) {
       throw new Error("can't create room" + error);
@@ -41,7 +47,7 @@ export class RoomResolver {
       });
       let room = await Room.findOne({ where: { id: roomId } });
 
-      // TODO: check whether room already contains user on 'join room'
+      // TODO: check whether room already contains player on 'join room'
       room!.users.push(user!);
       room = await room!.save();
       return room;
@@ -53,12 +59,11 @@ export class RoomResolver {
   @Mutation(() => Boolean)
   @Authorized()
   async quitRoom(@Ctx() context: MyContext, @Arg('roomId') roomId: string) {
-    const userId = context.payload?.userId;
     try {
       let room = await Room.findOne({ where: { id: roomId } });
 
       room!.users = room!.users.filter((user) => {
-        return user.id != userId;
+        return user.id != context.payload!.userId;
       });
 
       await room!.save();
@@ -74,7 +79,7 @@ export class RoomResolver {
     try {
       const user = await User.findOne({
         where: { id: context.payload!.userId },
-        relations: ['room'],
+        relations: ['room', 'room.game'],
       });
 
       return user!.room;
