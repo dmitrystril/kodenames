@@ -1,54 +1,35 @@
 import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from 'type-graphql';
-import { hash, verify } from 'argon2';
+import { verify } from 'argon2';
 import { getConnection } from 'typeorm';
 
 import { User } from '../entity/User';
-import { Player } from '../entity/Player';
 import MyContext from '../MyContext';
 import { createAccessToken, createRefreshToken } from '../auth';
 import { sendRefreshToken } from '../sendRefreshToken';
 import ErrorTypes from '../error/ErrorTypes';
 import { LoginResponse } from './responseType/LoginResponse';
 import { RegisterInput } from './inputType/RegisterInput';
+import { UserService } from '../service/UserService';
 
 @Resolver(User)
 export class UserResolver {
+  private userService: UserService;
+
+  constructor() {
+    this.userService = new UserService();
+  }
+
   @Query(() => User, { nullable: true })
   @Authorized()
   currentUser(@Ctx() context: MyContext) {
-    return User.findOne(context.payload!.userId);
+    return this.userService.getCurrentUser(context.payload!.userId);
   }
 
   @Mutation(() => Boolean)
-  async register(@Arg('input') registerInput: RegisterInput) {
+  register(@Arg('input') registerInput: RegisterInput) {
     const { email, password, userName } = registerInput;
 
-    const userAlreadyExists = await User.findOne({
-      where: { email },
-      select: ['id'],
-    });
-
-    if (userAlreadyExists) {
-      throw new Error(ErrorTypes.EMAIL_IS_ALREADY_TAKEN);
-    }
-
-    const hashedPassword = await hash(password);
-
-    try {
-      const player = await Player.create().save();
-
-      await User.create({
-        email,
-        password: hashedPassword,
-        userName,
-        player,
-      }).save();
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-
-    return true;
+    return this.userService.register(email, password, userName);
   }
 
   @Mutation(() => LoginResponse)
@@ -58,7 +39,6 @@ export class UserResolver {
     @Ctx() { res }: MyContext,
   ): Promise<LoginResponse> {
     const user = await User.findOne({ where: { email: email } });
-
     if (!user) {
       throw new Error(ErrorTypes.USER_NOT_FOUND);
     }

@@ -13,6 +13,7 @@ export class GameService {
     await player.save();
 
     const game = await Game.create({
+      cards: [],
       players: [player],
       dateCreated: new Date(),
     }).save();

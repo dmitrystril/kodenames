@@ -5,20 +5,20 @@ import { GameService } from '../service/GameService';
 
 @Resolver()
 export class GameResolver {
+  private gameService: GameService;
+
+  constructor() {
+    this.gameService = new GameService();
+  }
+
   @Query(() => String)
   toBeDeleted() {
     return 'random string';
   }
 
-  @Mutation(() => Game)
+  @Mutation(() => Boolean)
   @Authorized()
-  async createGame(@Ctx() context: MyContext) {
-    const gameService = new GameService();
-
-    try {
-      return gameService.createGame(context.payload!.userId);
-    } catch (error) {
-      throw new Error("can't create game" + error);
-    }
+  createGame(@Ctx() context: MyContext) {
+    return this.gameService.createGame(context.payload!.userId);
   }
 }
