@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Root = styled.div`
+import { CardType } from '../../generated/graphql';
+
+const Root = styled.div<{ type: CardType; isOpen: boolean }>`
   border-radius: 10px;
   flex: 1 0 18%;
   margin: 0 10px 10px 0;
@@ -9,7 +11,10 @@ const Root = styled.div`
   box-shadow: inset 0 0 2px 0 black;
   display: flex;
   flex-direction: column;
-  background: repeating-linear-gradient(315deg, #f8e7cf, #efc587 40%, white);
+  background: ${({ type, isOpen }) =>
+    isOpen
+      ? handleColorType(type)
+      : 'repeating-linear-gradient(315deg, #f8e7cf, #efc587 40%, white);'};
   user-select: none;
   cursor: pointer;
   transition: transform 0.2s;
@@ -17,6 +22,19 @@ const Root = styled.div`
     border: 2px solid white;
   }
 `;
+
+const handleColorType = (type: CardType) => {
+  switch (type) {
+    case CardType.Red:
+      return 'repeating-linear-gradient(315deg, #ff0065, #f75d59 40%, white);';
+    case CardType.Blue:
+      return 'repeating-linear-gradient(315deg, #1f45fc, #2b65ec 40%, white);';
+    case CardType.White:
+      return 'repeating-linear-gradient(315deg, #c0c0c0, #fefcff 40%, white);';
+    case CardType.Black:
+      return 'repeating-radial-gradient(circle, #505050, #505050 10px, #080808 10px, #080808 20px);';
+  }
+};
 
 const Circle = styled.div`
   width: 17px;
@@ -53,7 +71,7 @@ interface ICardProps {
 
 export const Card: React.FC<ICardProps> = ({ card }) => {
   return (
-    <Root>
+    <Root type={card.type} isOpen={card.isOpen}>
       <Circle />
       <HorizontalLine />
       <Label>{card.word}</Label>
