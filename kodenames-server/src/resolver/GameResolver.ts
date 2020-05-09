@@ -1,5 +1,4 @@
 import { Query, Resolver, Mutation, Authorized, Ctx } from 'type-graphql';
-import { Game } from '../entity/Game';
 import MyContext from '../MyContext';
 import { GameService } from '../service/GameService';
 

@@ -24,6 +24,10 @@ export class Card extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
+  @Field(() => String)
+  @Column()
+  word: string;
+
   @Field(() => CardType)
   @Column()
   type: CardType;
@@ -31,6 +35,10 @@ export class Card extends BaseEntity {
   @Field(() => Game)
   @ManyToOne(() => Game, (game) => game.cards)
   game: Game;
+
+  @Field(() => Boolean)
+  @Column()
+  isOpen: boolean;
 
   @Field(() => Boolean)
   @Column()
