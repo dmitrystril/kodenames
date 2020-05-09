@@ -22,6 +22,8 @@ const Root = styled.div`
 `;
 
 const Options = styled.div`
+  display: flex;
+  align-items: center;
   margin-right: auto;
 `;
 

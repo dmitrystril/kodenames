@@ -67,11 +67,16 @@ const Label = styled.span`
 
 interface ICardProps {
   card: any;
+  onOpenCard: Function;
 }
 
-export const Card: React.FC<ICardProps> = ({ card }) => {
+export const Card: React.FC<ICardProps> = ({ card, onOpenCard }) => {
   return (
-    <Root type={card.type} isOpen={card.isOpen}>
+    <Root
+      type={card.type}
+      isOpen={card.isOpen}
+      onDoubleClick={() => onOpenCard(card.id)}
+    >
       <Circle />
       <HorizontalLine />
       <Label>{card.word}</Label>

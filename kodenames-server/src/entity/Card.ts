@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, registerEnumType } from 'type-graphql';
+import { ObjectType, Field, ID, registerEnumType, Int } from 'type-graphql';
 import {
   Entity,
   BaseEntity,
@@ -23,6 +23,10 @@ export class Card extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
+
+  @Field(() => Int)
+  @Column()
+  readonly no: number;
 
   @Field(() => String)
   @Column()

@@ -75,6 +75,7 @@ export class GameService {
       }
 
       const card = Card.create({
+        no: i,
         word: allWords[index],
         type: cardType,
         isOpen: false,

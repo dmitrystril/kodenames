@@ -39,6 +39,10 @@ const ColumnTwo = styled.div`
   flex-basis: 30%;
 `;
 
+const RoomNo = styled.div`
+  margin-left: 15px;
+`;
+
 export const Room: React.FC = () => {
   const history = useHistory();
   const { data: currentRoomData } = useCurrentRoomQuery({
@@ -58,7 +62,8 @@ export const Room: React.FC = () => {
   return (
     <Root>
       <Header>
-        <Button onClick={() => handleQuitRoom()}>&#x21A9; Quit Room</Button>
+        <Button onClick={() => handleQuitRoom()}>&#x21A9;</Button>
+        <RoomNo>Room #{currentRoomData?.currentRoom?.no}</RoomNo>
       </Header>
 
       <RoomLayout>

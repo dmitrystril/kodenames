@@ -1,0 +1,3 @@
+mutation openCard($cardId: String!) {
+  openCard(cardId: $cardId)
+}

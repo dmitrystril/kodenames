@@ -48,6 +48,7 @@ export type Game = {
 export type Card = {
    __typename?: 'Card';
   id: Scalars['ID'];
+  no: Scalars['Float'];
   word: Scalars['String'];
   type: CardType;
   game: Game;
@@ -86,6 +87,7 @@ export type Mutation = {
   joinRoom: Room;
   quitRoom: Scalars['Boolean'];
   createGame: Scalars['Boolean'];
+  openCard: Scalars['Boolean'];
 };
 
 
@@ -112,6 +114,11 @@ export type MutationJoinRoomArgs = {
 
 export type MutationQuitRoomArgs = {
   roomId: Scalars['String'];
+};
+
+
+export type MutationOpenCardArgs = {
+  cardId: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -158,7 +165,7 @@ export type CurrentRoomQuery = (
       & Pick<Game, 'id' | 'dateCreated'>
       & { cards: Array<(
         { __typename?: 'Card' }
-        & Pick<Card, 'id' | 'type' | 'word' | 'isOpen' | 'isActive'>
+        & Pick<Card, 'id' | 'no' | 'type' | 'word' | 'isOpen' | 'isActive'>
       )>, players: Array<(
         { __typename?: 'Player' }
         & Pick<Player, 'id' | 'team'>
@@ -215,6 +222,16 @@ export type LogoutMutationVariables = {};
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'logout'>
+);
+
+export type OpenCardMutationVariables = {
+  cardId: Scalars['String'];
+};
+
+
+export type OpenCardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'openCard'>
 );
 
 export type QuitRoomMutationVariables = {
@@ -297,6 +314,7 @@ export const CurrentRoomDocument = gql`
       id
       cards {
         id
+        no
         type
         word
         isOpen
@@ -469,6 +487,36 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const OpenCardDocument = gql`
+    mutation openCard($cardId: String!) {
+  openCard(cardId: $cardId)
+}
+    `;
+export type OpenCardMutationFn = ApolloReactCommon.MutationFunction<OpenCardMutation, OpenCardMutationVariables>;
+
+/**
+ * __useOpenCardMutation__
+ *
+ * To run a mutation, you first call `useOpenCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useOpenCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [openCardMutation, { data, loading, error }] = useOpenCardMutation({
+ *   variables: {
+ *      cardId: // value for 'cardId'
+ *   },
+ * });
+ */
+export function useOpenCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<OpenCardMutation, OpenCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<OpenCardMutation, OpenCardMutationVariables>(OpenCardDocument, baseOptions);
+      }
+export type OpenCardMutationHookResult = ReturnType<typeof useOpenCardMutation>;
+export type OpenCardMutationResult = ApolloReactCommon.MutationResult<OpenCardMutation>;
+export type OpenCardMutationOptions = ApolloReactCommon.BaseMutationOptions<OpenCardMutation, OpenCardMutationVariables>;
 export const QuitRoomDocument = gql`
     mutation quitRoom($roomId: String!) {
   quitRoom(roomId: $roomId)
