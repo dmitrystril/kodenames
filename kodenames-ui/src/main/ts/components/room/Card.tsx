@@ -12,7 +12,7 @@ const Root = styled.div`
   background: repeating-linear-gradient(315deg, #f8e7cf, #efc587 40%, white);
   user-select: none;
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform 0.2s;
   :hover {
     border: 2px solid white;
   }
@@ -47,12 +47,16 @@ const Label = styled.span`
   text-transform: uppercase;
 `;
 
-export const Card: React.FC = () => {
+interface ICardProps {
+  card: any;
+}
+
+export const Card: React.FC<ICardProps> = ({ card }) => {
   return (
     <Root>
       <Circle />
       <HorizontalLine />
-      <Label>Placeholder</Label>
+      <Label>{card.word}</Label>
     </Root>
   );
 };

@@ -63,7 +63,7 @@ export const Room: React.FC = () => {
 
       <RoomLayout>
         <ColumnOne>
-          <Table />
+          <Table game={currentRoomData?.currentRoom?.game} />
           <Log />
         </ColumnOne>
 

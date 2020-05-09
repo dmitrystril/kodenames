@@ -48,8 +48,10 @@ export type Game = {
 export type Card = {
    __typename?: 'Card';
   id: Scalars['ID'];
+  word: Scalars['String'];
   type: CardType;
   game: Game;
+  isOpen: Scalars['Boolean'];
   isActive: Scalars['Boolean'];
 };
 
@@ -83,7 +85,7 @@ export type Mutation = {
   createRoom: Room;
   joinRoom: Room;
   quitRoom: Scalars['Boolean'];
-  createGame: Game;
+  createGame: Scalars['Boolean'];
 };
 
 
@@ -115,13 +117,21 @@ export type MutationQuitRoomArgs = {
 export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
-  userName?: Maybe<Scalars['String']>;
+  userName: Scalars['String'];
 };
 
 export type LoginResponse = {
    __typename?: 'LoginResponse';
   accessToken: Scalars['String'];
   user: User;
+};
+
+export type Dictionary = {
+   __typename?: 'Dictionary';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description: Scalars['String'];
+  words: Scalars['String'];
 };
 
 export type CreateRoomMutationVariables = {};
@@ -148,7 +158,7 @@ export type CurrentRoomQuery = (
       & Pick<Game, 'id' | 'dateCreated'>
       & { cards: Array<(
         { __typename?: 'Card' }
-        & Pick<Card, 'id' | 'type' | 'isActive'>
+        & Pick<Card, 'id' | 'type' | 'word' | 'isOpen' | 'isActive'>
       )>, players: Array<(
         { __typename?: 'Player' }
         & Pick<Player, 'id' | 'team'>
@@ -288,6 +298,8 @@ export const CurrentRoomDocument = gql`
       cards {
         id
         type
+        word
+        isOpen
         isActive
       }
       players {

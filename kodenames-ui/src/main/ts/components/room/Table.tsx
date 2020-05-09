@@ -10,12 +10,17 @@ const Root = styled.div`
   flex-basis: 75%;
 `;
 
-export const Table: React.FC = () => {
+interface ITableProps {
+  game: any;
+}
+
+export const Table: React.FC<ITableProps> = ({ game }) => {
   return (
     <Root>
-      {[...Array(25)].map((_, index: number) => (
-        <Card key={index} />
-      ))}
+      {game &&
+        game.cards.map((card: any, index: number) => (
+          <Card card={card} key={index} />
+        ))}
     </Root>
   );
 };

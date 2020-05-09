@@ -7,6 +7,8 @@ query currentRoom {
       cards {
         id
         type
+        word
+        isOpen
         isActive
       }
       players {

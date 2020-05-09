@@ -25,7 +25,7 @@ export const Routes: React.FC = () => {
         <PrivateRoute>
           <Route exact path={Pages.LOBBY} component={Lobby} />
           <Route exact path={Pages.ROOM} component={Room} />
-          <Redirect from="/**" to={Pages.LOBBY} />
+          {/* <Redirect from="/**" to={Pages.LOBBY} /> */}
         </PrivateRoute>
 
         <Redirect from="/**" to={Pages.LOGIN} />
