@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { Routes } from './Routes';
+import { Routes } from './main/ts/Routes';
 import { setAccessToken } from './accessToken';
 
 const Root = styled.div`
