@@ -8,6 +8,9 @@ import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable } from 'apollo-link';
 import jwtDecode from 'jwt-decode';
+import { WebSocketLink } from 'apollo-link-ws';
+import { split } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
 
 import GlobalStyles from './main/resources/styles/GlobalStyles';
 import { App } from './App';
@@ -46,6 +49,31 @@ const requestLink = new ApolloLink(
     }),
 );
 
+const httpLink = new HttpLink({
+  uri: 'http://localhost:4000/graphql',
+  credentials: 'include',
+});
+
+const webSocketLink = new WebSocketLink({
+  uri: `ws://localhost:4000/graphql`,
+  options: {
+    reconnect: true,
+  },
+});
+
+const splitLink = split(
+  // split based on operation type
+  ({ query }: any) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  webSocketLink,
+  httpLink,
+);
+
 const client = new ApolloClient({
   link: ApolloLink.from([
     new TokenRefreshLink({
@@ -82,10 +110,7 @@ const client = new ApolloClient({
       console.log('networkError: ', networkError);
     }),
     requestLink,
-    new HttpLink({
-      uri: 'http://localhost:4000/graphql',
-      credentials: 'include',
-    }),
+    splitLink,
   ]),
   cache,
 });
