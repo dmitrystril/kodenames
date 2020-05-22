@@ -35,10 +35,4 @@ export class RoomResolver {
   quitRoom(@Ctx() context: MyContext, @Arg('roomId') roomId: string) {
     return this.roomService.quitRoom(context.payload!.userId, roomId);
   }
-
-  @Query(() => Room, { nullable: true })
-  @Authorized()
-  currentRoom(@Ctx() context: MyContext) {
-    return this.roomService.getCurrentRoom(context.payload!.userId);
-  }
 }

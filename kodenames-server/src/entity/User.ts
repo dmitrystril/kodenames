@@ -35,7 +35,7 @@ export class User extends BaseEntity {
   @JoinColumn()
   player: Player;
 
-  @Field(() => Room)
+  @Field(() => Room, { nullable: true })
   @ManyToOne(() => Room, (room) => room.users)
   room: Room;
 

@@ -1,6 +1,6 @@
 import { Room } from '../entity/Room';
-import { GameService } from './GameService';
 import { User } from '../entity/User';
+import { GameService } from './GameService';
 
 export class RoomService {
   private gameService: GameService;
@@ -77,19 +77,6 @@ export class RoomService {
       return true;
     } catch (error) {
       throw new Error("Can't quit room" + error);
-    }
-  };
-
-  getCurrentRoom = async (userId: string) => {
-    try {
-      const user = await User.findOne({
-        where: { id: userId },
-        relations: ['room', 'room.game'],
-      });
-
-      return user!.room;
-    } catch (error) {
-      throw new Error("Can't get current room" + error);
     }
   };
 }

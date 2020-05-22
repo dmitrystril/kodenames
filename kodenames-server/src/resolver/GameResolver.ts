@@ -1,8 +1,25 @@
-import { Query, Resolver, Mutation, Authorized, Ctx, Arg } from 'type-graphql';
+import {
+  Resolver,
+  Mutation,
+  Authorized,
+  Ctx,
+  Arg,
+  Subscription,
+  Root,
+  PubSub,
+  Publisher,
+} from 'type-graphql';
 
 import MyContext from '../MyContext';
 import { GameService } from '../service/GameService';
 import { Card } from '../entity/Card';
+import {
+  GameChangeNotification,
+  GameChangeType,
+} from '../entity/notification/GameChangeNotification';
+import { CardOpen } from '../entity/notification/CardOpen';
+
+const GAME_CHANGE_SUBSCRIPTION = 'GAME_CHANGE_SUBSCRIPTION';
 
 @Resolver()
 export class GameResolver {
@@ -10,11 +27,6 @@ export class GameResolver {
 
   constructor() {
     this.gameService = new GameService();
-  }
-
-  @Query(() => String)
-  toBeDeleted() {
-    return 'random string';
   }
 
   @Mutation(() => Boolean)
@@ -25,7 +37,11 @@ export class GameResolver {
 
   @Mutation(() => Boolean)
   @Authorized()
-  async openCard(@Arg('cardId') cardId: string) {
+  async openCard(
+    @Arg('cardId') cardId: string,
+    @PubSub(GAME_CHANGE_SUBSCRIPTION)
+    publish: Publisher<GameChangeNotification>,
+  ) {
     const card = await Card.findOne({
       where: { id: cardId },
     });
@@ -36,6 +52,21 @@ export class GameResolver {
 
     card!.isOpen = true;
     card!.save();
+
+    let cardOpen = new CardOpen();
+    cardOpen.cardId = card!.id;
+    await publish({
+      changeType: GameChangeType.CARD_OPEN,
+      change: cardOpen,
+    });
     return true;
+  }
+
+  @Subscription({ topics: GAME_CHANGE_SUBSCRIPTION })
+  // @Authorized()
+  subscribeToGameChange(
+    @Root() gameChangeNotification: GameChangeNotification,
+  ): GameChangeNotification {
+    return gameChangeNotification;
   }
 }

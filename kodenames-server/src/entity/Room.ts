@@ -25,7 +25,7 @@ export class Room extends BaseEntity {
   @Generated('increment')
   readonly no: number;
 
-  @Field(() => [User])
+  @Field(() => [User], { nullable: true })
   @OneToMany(() => User, (user) => user.room, {
     cascade: true,
     eager: true,

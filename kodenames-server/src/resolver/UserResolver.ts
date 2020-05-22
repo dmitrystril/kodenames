@@ -21,8 +21,8 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   @Authorized()
-  currentUser(@Ctx() context: MyContext) {
-    return this.userService.getCurrentUser(context.payload!.userId);
+  user(@Ctx() context: MyContext) {
+    return this.userService.getUser(context.payload!.userId);
   }
 
   @Mutation(() => Boolean)

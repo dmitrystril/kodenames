@@ -5,8 +5,11 @@ import { Player } from '../entity/Player';
 import ErrorTypes from '../error/ErrorTypes';
 
 export class UserService {
-  getCurrentUser = async (userId: string): Promise<User | undefined> => {
-    const user = await User.findOne(userId);
+  getUser = async (userId: string) => {
+    const user = await User.findOne({
+      where: { id: userId },
+      relations: ['room', 'room.game'],
+    });
 
     return user;
   };
