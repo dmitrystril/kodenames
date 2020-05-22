@@ -1,0 +1,36 @@
+query fullUser {
+  user {
+    id
+    email
+    userName
+    player {
+      id
+      team
+    }
+    room {
+      id
+      no
+      users {
+        id
+        email
+        userName
+        player {
+          id
+          team
+        }
+      }
+      game {
+        id
+        cards {
+          id
+          no
+          word
+          type
+          isOpen
+          isActive
+        }
+        dateCreated
+      }
+    }
+  }
+}

@@ -15,10 +15,8 @@ export type Scalars = {
 
 export type Query = {
    __typename?: 'Query';
-  currentUser?: Maybe<User>;
+  user?: Maybe<User>;
   rooms: Array<Room>;
-  currentRoom?: Maybe<Room>;
-  toBeDeleted: Scalars['String'];
 };
 
 export type User = {
@@ -27,7 +25,7 @@ export type User = {
   email: Scalars['String'];
   userName: Scalars['String'];
   player: Player;
-  room: Room;
+  room?: Maybe<Room>;
 };
 
 export type Player = {
@@ -48,7 +46,7 @@ export type Game = {
 export type Card = {
    __typename?: 'Card';
   id: Scalars['ID'];
-  no: Scalars['Float'];
+  no: Scalars['Int'];
   word: Scalars['String'];
   type: CardType;
   game: Game;
@@ -73,7 +71,7 @@ export type Room = {
    __typename?: 'Room';
   id: Scalars['ID'];
   no: Scalars['Int'];
-  users: Array<User>;
+  users?: Maybe<Array<User>>;
   game: Game;
 };
 
@@ -133,6 +131,34 @@ export type LoginResponse = {
   user: User;
 };
 
+export type Subscription = {
+   __typename?: 'Subscription';
+  subscribeToGameChange: GameChangeNotification;
+};
+
+export type GameChangeNotification = {
+   __typename?: 'GameChangeNotification';
+  changeType: GameChangeType;
+  change: GameChange;
+};
+
+export enum GameChangeType {
+  CardOpen = 'CARD_OPEN',
+  LogEntryAdd = 'LOG_ENTRY_ADD'
+}
+
+export type GameChange = CardOpen | LogEntryAdd;
+
+export type CardOpen = {
+   __typename?: 'CardOpen';
+  cardId: Scalars['String'];
+};
+
+export type LogEntryAdd = {
+   __typename?: 'LogEntryAdd';
+  logEntry: Scalars['String'];
+};
+
 export type Dictionary = {
    __typename?: 'Dictionary';
   id: Scalars['ID'];
@@ -152,36 +178,36 @@ export type CreateRoomMutation = (
   ) }
 );
 
-export type CurrentRoomQueryVariables = {};
+export type FullUserQueryVariables = {};
 
 
-export type CurrentRoomQuery = (
+export type FullUserQuery = (
   { __typename?: 'Query' }
-  & { currentRoom?: Maybe<(
-    { __typename?: 'Room' }
-    & Pick<Room, 'id' | 'no'>
-    & { game: (
-      { __typename?: 'Game' }
-      & Pick<Game, 'id' | 'dateCreated'>
-      & { cards: Array<(
-        { __typename?: 'Card' }
-        & Pick<Card, 'id' | 'no' | 'type' | 'word' | 'isOpen' | 'isActive'>
-      )>, players: Array<(
-        { __typename?: 'Player' }
-        & Pick<Player, 'id' | 'team'>
-      )> }
-    ) }
-  )> }
-);
-
-export type CurrentUserQueryVariables = {};
-
-
-export type CurrentUserQuery = (
-  { __typename?: 'Query' }
-  & { currentUser?: Maybe<(
+  & { user?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'userName'>
+    & { player: (
+      { __typename?: 'Player' }
+      & Pick<Player, 'id' | 'team'>
+    ), room?: Maybe<(
+      { __typename?: 'Room' }
+      & Pick<Room, 'id' | 'no'>
+      & { users?: Maybe<Array<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email' | 'userName'>
+        & { player: (
+          { __typename?: 'Player' }
+          & Pick<Player, 'id' | 'team'>
+        ) }
+      )>>, game: (
+        { __typename?: 'Game' }
+        & Pick<Game, 'id' | 'dateCreated'>
+        & { cards: Array<(
+          { __typename?: 'Card' }
+          & Pick<Card, 'id' | 'no' | 'word' | 'type' | 'isOpen' | 'isActive'>
+        )> }
+      ) }
+    )> }
   )> }
 );
 
@@ -262,14 +288,43 @@ export type RoomsQuery = (
   & { rooms: Array<(
     { __typename?: 'Room' }
     & Pick<Room, 'id' | 'no'>
-    & { users: Array<(
+    & { users?: Maybe<Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'userName' | 'email'>
       & { player: (
         { __typename?: 'Player' }
         & Pick<Player, 'id'>
       ) }
-    )> }
+    )>> }
+  )> }
+);
+
+export type SubscribeToGameChangeSubscriptionVariables = {};
+
+
+export type SubscribeToGameChangeSubscription = (
+  { __typename?: 'Subscription' }
+  & { subscribeToGameChange: (
+    { __typename?: 'GameChangeNotification' }
+    & Pick<GameChangeNotification, 'changeType'>
+    & { change: (
+      { __typename: 'CardOpen' }
+      & Pick<CardOpen, 'cardId'>
+    ) | (
+      { __typename: 'LogEntryAdd' }
+      & Pick<LogEntryAdd, 'logEntry'>
+    ) }
+  ) }
+);
+
+export type UserQueryVariables = {};
+
+
+export type UserQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'email' | 'userName'>
   )> }
 );
 
@@ -305,89 +360,69 @@ export function useCreateRoomMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateRoomMutationHookResult = ReturnType<typeof useCreateRoomMutation>;
 export type CreateRoomMutationResult = ApolloReactCommon.MutationResult<CreateRoomMutation>;
 export type CreateRoomMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateRoomMutation, CreateRoomMutationVariables>;
-export const CurrentRoomDocument = gql`
-    query currentRoom {
-  currentRoom {
+export const FullUserDocument = gql`
+    query fullUser {
+  user {
     id
-    no
-    game {
+    email
+    userName
+    player {
       id
-      cards {
+      team
+    }
+    room {
+      id
+      no
+      users {
         id
-        no
-        type
-        word
-        isOpen
-        isActive
+        email
+        userName
+        player {
+          id
+          team
+        }
       }
-      players {
+      game {
         id
-        team
+        cards {
+          id
+          no
+          word
+          type
+          isOpen
+          isActive
+        }
+        dateCreated
       }
-      dateCreated
     }
   }
 }
     `;
 
 /**
- * __useCurrentRoomQuery__
+ * __useFullUserQuery__
  *
- * To run a query within a React component, call `useCurrentRoomQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFullUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFullUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCurrentRoomQuery({
+ * const { data, loading, error } = useFullUserQuery({
  *   variables: {
  *   },
  * });
  */
-export function useCurrentRoomQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentRoomQuery, CurrentRoomQueryVariables>) {
-        return ApolloReactHooks.useQuery<CurrentRoomQuery, CurrentRoomQueryVariables>(CurrentRoomDocument, baseOptions);
+export function useFullUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FullUserQuery, FullUserQueryVariables>) {
+        return ApolloReactHooks.useQuery<FullUserQuery, FullUserQueryVariables>(FullUserDocument, baseOptions);
       }
-export function useCurrentRoomLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentRoomQuery, CurrentRoomQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CurrentRoomQuery, CurrentRoomQueryVariables>(CurrentRoomDocument, baseOptions);
+export function useFullUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FullUserQuery, FullUserQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<FullUserQuery, FullUserQueryVariables>(FullUserDocument, baseOptions);
         }
-export type CurrentRoomQueryHookResult = ReturnType<typeof useCurrentRoomQuery>;
-export type CurrentRoomLazyQueryHookResult = ReturnType<typeof useCurrentRoomLazyQuery>;
-export type CurrentRoomQueryResult = ApolloReactCommon.QueryResult<CurrentRoomQuery, CurrentRoomQueryVariables>;
-export const CurrentUserDocument = gql`
-    query currentUser {
-  currentUser {
-    id
-    email
-    userName
-  }
-}
-    `;
-
-/**
- * __useCurrentUserQuery__
- *
- * To run a query within a React component, call `useCurrentUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCurrentUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCurrentUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
-        return ApolloReactHooks.useQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, baseOptions);
-      }
-export function useCurrentUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, baseOptions);
-        }
-export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
-export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
-export type CurrentUserQueryResult = ApolloReactCommon.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export type FullUserQueryHookResult = ReturnType<typeof useFullUserQuery>;
+export type FullUserLazyQueryHookResult = ReturnType<typeof useFullUserLazyQuery>;
+export type FullUserQueryResult = ApolloReactCommon.QueryResult<FullUserQuery, FullUserQueryVariables>;
 export const JoinRoomDocument = gql`
     mutation joinRoom($roomId: String!) {
   joinRoom(roomId: $roomId) {
@@ -618,3 +653,74 @@ export function useRoomsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type RoomsQueryHookResult = ReturnType<typeof useRoomsQuery>;
 export type RoomsLazyQueryHookResult = ReturnType<typeof useRoomsLazyQuery>;
 export type RoomsQueryResult = ApolloReactCommon.QueryResult<RoomsQuery, RoomsQueryVariables>;
+export const SubscribeToGameChangeDocument = gql`
+    subscription subscribeToGameChange {
+  subscribeToGameChange {
+    changeType
+    change {
+      __typename
+      ... on CardOpen {
+        cardId
+      }
+      ... on LogEntryAdd {
+        logEntry
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSubscribeToGameChangeSubscription__
+ *
+ * To run a query within a React component, call `useSubscribeToGameChangeSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeToGameChangeSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubscribeToGameChangeSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSubscribeToGameChangeSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<SubscribeToGameChangeSubscription, SubscribeToGameChangeSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<SubscribeToGameChangeSubscription, SubscribeToGameChangeSubscriptionVariables>(SubscribeToGameChangeDocument, baseOptions);
+      }
+export type SubscribeToGameChangeSubscriptionHookResult = ReturnType<typeof useSubscribeToGameChangeSubscription>;
+export type SubscribeToGameChangeSubscriptionResult = ApolloReactCommon.SubscriptionResult<SubscribeToGameChangeSubscription>;
+export const UserDocument = gql`
+    query user {
+  user {
+    id
+    email
+    userName
+  }
+}
+    `;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        return ApolloReactHooks.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+      }
+export function useUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = ApolloReactCommon.QueryResult<UserQuery, UserQueryVariables>;

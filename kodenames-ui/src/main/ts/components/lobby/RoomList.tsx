@@ -68,9 +68,12 @@ export const RoomList: React.FC<RoomListProps> = ({ rooms, onJoinRoom }) => {
               <div>
                 <u>Players:</u>
               </div>
-              {room.users.map((user: any) => (
-                <UserName key={user.id}>{user.userName || user.email}</UserName>
-              ))}
+              {room.users &&
+                room.users.map((user: any) => (
+                  <UserName key={user.id}>
+                    {user.userName || user.email}
+                  </UserName>
+                ))}
             </PlayersCell>
 
             <ButtonCell>

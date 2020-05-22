@@ -5,7 +5,7 @@ import { Pages } from '../constants/Pages';
 import { Register } from '../pages/Register';
 import { Login } from '../pages/Login';
 import { Lobby } from '../pages/Lobby';
-import { Room } from '../pages/Room';
+import { RoomContainer } from '../pages/Room';
 import { getAccessToken } from '../../../accessToken';
 import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
@@ -33,7 +33,7 @@ export const Routes: React.FC = () => {
         />
         <PrivateRoute
           path={Pages.ROOM}
-          component={Room}
+          component={RoomContainer}
           isAuthenticated={isAuthenticated}
         />
         <Redirect

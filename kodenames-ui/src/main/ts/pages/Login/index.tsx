@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Pages } from '../../constants/Pages';
 import {
   useLoginMutation,
-  CurrentUserDocument,
-  CurrentUserQuery,
+  UserDocument,
+  UserQuery,
 } from '../../generated/graphql';
 import { setAccessToken } from '../../../../accessToken';
 import ErrorTypes from '../../ErrorTypes';
@@ -87,24 +87,24 @@ export const Login: React.FC = () => {
         email,
         password,
       },
-      update: (store, { data }) => {
-        if (!data) {
-          return null;
-        }
+        update: (store, { data }) => {
+          if (!data) {
+            return null;
+          }
 
-        store.writeQuery<CurrentUserQuery>({
-          query: CurrentUserDocument,
-          data: {
-            currentUser: data.login.user,
-          },
-        });
-      },
-    }).catch((error) => {
-      if (error.message.includes(ErrorTypes.USER_NOT_FOUND)) {
-        alert(ErrorTypes.USER_NOT_FOUND);
-      } else if (error.message.includes(ErrorTypes.PASSWORD_IS_INCORRECT)) {
-        alert(ErrorTypes.PASSWORD_IS_INCORRECT);
-      }
+          store.writeQuery<UserQuery>({
+            query: UserDocument,
+            data: {
+              user: data.login.user,
+            },
+          });
+        },
+      }).catch((error) => {
+        if (error.message.includes(ErrorTypes.USER_NOT_FOUND)) {
+          alert(ErrorTypes.USER_NOT_FOUND);
+        } else if (error.message.includes(ErrorTypes.PASSWORD_IS_INCORRECT)) {
+          alert(ErrorTypes.PASSWORD_IS_INCORRECT);
+        }
     });
 
     if (response && response.data) {

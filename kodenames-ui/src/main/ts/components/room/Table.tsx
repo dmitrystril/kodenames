@@ -26,18 +26,13 @@ export const Table: React.FC<ITableProps> = ({ game }) => {
     });
   };
 
-  if (game && game.cards) {
-    game.cards = game.cards.sort(
-      (card1: any, card2: any) => card1.no - card2.no,
-    );
-  }
+  game.cards = game.cards.sort((card1: any, card2: any) => card1.no - card2.no);
 
   return (
     <Root>
-      {game &&
-        game.cards.map((card: any, index: number) => (
-          <Card card={card} key={index} onOpenCard={handleOpenCard} />
-        ))}
+      {game.cards.map((card: any, index: number) => (
+        <Card card={card} key={index} onOpenCard={handleOpenCard} />
+      ))}
     </Root>
   );
 };

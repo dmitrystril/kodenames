@@ -3,10 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Pages } from '../../constants/Pages';
-import {
-  useCurrentUserQuery,
-  useLogoutMutation,
-} from '../../generated/graphql';
+import { useUserQuery, useLogoutMutation } from '../../generated/graphql';
 import { setAccessToken } from '../../../../accessToken';
 import { withRouter } from 'react-router';
 import { Button } from './Button';
@@ -36,14 +33,12 @@ const LogoutButton = styled(Button)`
 `;
 
 const Header: React.FC<RouteComponentProps> = ({ history, children }) => {
-  const { data, loading } = useCurrentUserQuery();
-  const currentUser = data && data.currentUser;
+  const { data, loading } = useUserQuery();
+  const user = data && data.user;
 
   const [logout, { client }] = useLogoutMutation();
 
-  const loggedInAs: string = currentUser
-    ? currentUser.userName || currentUser.email
-    : '';
+  const loggedInAs: string = user ? user.userName || user.email : '';
 
   return (
     <Root>
@@ -51,7 +46,7 @@ const Header: React.FC<RouteComponentProps> = ({ history, children }) => {
 
       <LoggedInAs>{loggedInAs}</LoggedInAs>
 
-      {!loading && currentUser && (
+      {!loading && user && (
         <LogoutButton
           onClick={async () => {
             await logout();

@@ -1,0 +1,14 @@
+subscription subscribeToGameChange {
+  subscribeToGameChange {
+    changeType
+    change {
+      __typename
+      ... on CardOpen {
+        cardId
+      }
+      ... on LogEntryAdd {
+        logEntry
+      }
+    }
+  }
+}

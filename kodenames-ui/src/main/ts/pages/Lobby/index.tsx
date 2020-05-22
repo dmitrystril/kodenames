@@ -57,7 +57,6 @@ export const Lobby: React.FC = () => {
     const room = await createRoom().catch((error) => {
       console.error('room not created', error);
     });
-
     if (room) {
       history.push(Pages.ROOM);
     }
@@ -75,7 +74,6 @@ export const Lobby: React.FC = () => {
     }).catch((error) => {
       console.error("can't join room", error);
     });
-
     if (room) {
       history.push(Pages.ROOM);
     }
