@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher,
+} from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Observable } from 'apollo-link';
@@ -16,8 +19,13 @@ import GlobalStyles from './main/resources/styles/GlobalStyles';
 import { App } from './App';
 import * as serviceWorker from './serviceWorker';
 import { getAccessToken, setAccessToken } from './accessToken';
+import introspectionQueryResultData from './main/ts/generated/fragment-matcher.json';
 
-const cache = new InMemoryCache();
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData,
+});
+
+const cache = new InMemoryCache({ fragmentMatcher });
 
 const requestLink = new ApolloLink(
   (operation, forward) =>

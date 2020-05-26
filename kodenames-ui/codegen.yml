@@ -11,4 +11,8 @@ generates:
       withHOC: false
       withComponent: false
       withHooks: true
-
+  src/main/ts/generated/fragment-matcher.json:
+    plugins:
+      - 'fragment-matcher'
+    config:
+      module: commonjs

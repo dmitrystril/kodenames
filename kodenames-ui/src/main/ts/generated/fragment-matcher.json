@@ -1,0 +1,18 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "UNION",
+        "name": "GameChange",
+        "possibleTypes": [
+          {
+            "name": "CardOpen"
+          },
+          {
+            "name": "LogEntryAdd"
+          }
+        ]
+      }
+    ]
+  }
+}
